@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "stsiv"
+version = "0.1.0"
+description = "This is my course work project, which adds visual functionallity for NIST STS test suit."
+authors = ["Ivan Rotankov <oppyinternship@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.104.1"
+uvicorn = "^0.23.2"
+pydantic = "^2.4.2"
+pydantic-settings = "^2.0.3"
+psycopg2-binary = "^2.9.9"
+SQLAlchemy = "^2.0.23"
+typing = "3.7.4.3"
+environs = "^9.5.0"
+alembic = "^1.12.1"
+python-dotenv = "^1.0.0"
+setuptools = "^68.2.2"
+email-validator = "^2.1.0.post1"
+dataclasses-json = "^0.6.1"
+asyncpg = "^0.28.0"
+structlog = "^23.2.0"
+ddtrace = "^2.1.5"
+bcrypt = "^4.0.1"
+pydantic-core = "^2.9.1"
+pyjwt = "^2.8.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
