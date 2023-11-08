@@ -158,10 +158,12 @@ ConfigT = TypeVar("ConfigT", bound=AppConfig)
 
 
 class DevelopmentJWTConfig(AppConfig):
-    """_summary_
+    """
+    Development config for user service
+    Added support for jwt tokens
 
     Args:
-        AppConfig (_type_): _description_
+        AppConfig (BaseSettings): Base class of application config
     """
     JWT_LIFETIME = 3600
     JWT_SECRET_KEY: str = "c65aba774aacb2bcffeb464b14a9401fab0c1d63ef94c5fe663690f45a35fd8e"

@@ -5,7 +5,8 @@ from uuid import UUID
 
 
 class CurrentUser(BaseModel):
-    """_summary_
+    """
+    Schema for current user used by middleware
 
     Args:
         BaseModel (_type_): _description_

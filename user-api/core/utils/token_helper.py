@@ -8,26 +8,25 @@ from core.exceptions import DecodeTokenException, ExpiredTokenException
 
 class TokenHelper:
     """
-    Token Helper for 
+    Token Helper implement some functionality for
+    jwt tokens
 
     Raises:
-        DecodeTokenException: _description_
-        ExpiredTokenException: _description_
-        DecodeTokenException: _description_
-
-    Returns:
-        _type_: _description_
+        DecodeTokenException: 
+        ExpiredTokenException:
+        DecodeTokenException:
     """
     @staticmethod
     def encode(payload: dict, expire_period: int = config.JWT_CONFIG) -> str:
-        """_summary_
+        """
+        Encoding 
 
         Args:
-            payload (dict): _description_
-            expire_period (int, optional): _description_. Defaults to 3600.
+            payload (dict): payload of certain jwt
+            expire_period (int, optional): Time of life for token. Defaults to 3600.
 
         Returns:
-            str: _description_
+            str: encoded token
         """
         token = jwt.encode(
             payload={
@@ -37,6 +36,7 @@ class TokenHelper:
             key=config.JWT_SECRET_KEY,
             algorithm=config.JWT_ALGORITHM,
         ).decode("utf8")
+
         return token
 
     @staticmethod

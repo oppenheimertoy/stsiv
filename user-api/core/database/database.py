@@ -25,6 +25,7 @@ Base = declarative_base()
 # I want to implement some strategy pattern realization here
 # for async/sync sqlalchemy engines and sessions
 
+
 class AbstractEngineController(ABC):
     """
     Abstract base class for engine controllers.
@@ -34,14 +35,15 @@ class AbstractEngineController(ABC):
         """
         Initialize the engine with the given connection string.
         """
-        pass
+        ...
 
     @abstractmethod
     async def session(self):
         """
         Provide a transactional scope around a series of operations.
         """
-        pass
+        ...
+
 
 class AsyncEngineController(AbstractEngineController):
     """

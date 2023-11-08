@@ -20,10 +20,11 @@ from core.utils.token_helper import TokenHelper
 
 
 class UserCriteria(TypedDict):
-    """_summary_
-
-    Args:
-        TypedDict (_type_): _description_
+    """
+    Custom type for user fields validation
+    
+    Args: 
+        email (str): user email
     """
     email: str
     username: str
