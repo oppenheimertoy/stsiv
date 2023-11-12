@@ -58,7 +58,7 @@ class AsyncEngineController(AbstractEngineController):
         Init method for concrete async engine realization
 
         Args:
-            conn_string (str) : Connection string usign asyncpg for
+            conn_string (str) : Connection string usign asyncpg for service database
             asyncio operaton support(Sqlaclhemy >= 1.4)
         """
         self._engine = create_async_engine(conn_string, pool_pre_ping=True,

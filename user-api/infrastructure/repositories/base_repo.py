@@ -17,8 +17,10 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy import (
     exists,
     and_,
-    select
+    Select
 )
+
+from sqlalchemy.sql.expression import select
 
 from sqlalchemy.ext.asyncio import (
     AsyncSession

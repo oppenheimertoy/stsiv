@@ -6,7 +6,7 @@ import bcrypt
 
 from sqlalchemy import String, Boolean
 from sqlalchemy import UUID as UUID_SQL
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from core.database.database import Base as BaseModel
 from core.database.mixins import TimestampMixin
@@ -26,7 +26,6 @@ class User(BaseModel, TimestampMixin):
     _password: Mapped[String] = mapped_column("password", String)
     name: Mapped[String] = mapped_column(String)
     surname: Mapped[String] = mapped_column(String)
-    middlename: Mapped[String] = mapped_column(String)
     active: Mapped[Boolean] = mapped_column(Boolean, default=True)
 
     @property
