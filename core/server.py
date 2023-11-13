@@ -152,7 +152,7 @@ def create_app() -> FastAPI:
 
     @factory_app.on_event("shutdown")
     async def shutdown_db_connection():
-        db_inst.close_database_connection()
+        await db_inst.close_database_connection()
 
     return factory_app
 

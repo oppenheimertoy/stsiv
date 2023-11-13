@@ -3,7 +3,7 @@ from typing import (
     Awaitable
 )
 
-import bcrypt
+from uuid import UUID
 
 from app.models.user import User
 from app.schemas.jwt import TokenSchema
@@ -58,7 +58,7 @@ class UserService:
         encr_pass = PasswordHandler().hash(password1)
 
         if await self.user_repo.check_user_exists(UserCriteria(email=email,
-                                                         username=username)):
+                                                               username=username)):
             raise DuplicateEmailOrNicknameException
 
         return await self.user_repo.create_user(UserDataDTO(username=username, email=email,
@@ -113,5 +113,16 @@ class UserService:
         return TokenSchema(
             access_token=TokenHelper.encode(
                 payload={"user_id": token.get("user_id")}),
-            refresh_token=TokenHelper.encode(payload={"sub": "refresh_token"}),
+            refresh_token=TokenHelper.encode(payload={"sub": "refresh_token"})
         )
+
+    async def get_user_by_id(self, id_: UUID) -> Awaitable[User]:
+        """_summary_
+
+        Args:
+            id_ (UUID): _description_
+
+        Returns:
+            Awaitable[User]: _description_
+        """
+        return await self.user_repo.async_get(id_)
