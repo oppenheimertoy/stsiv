@@ -1,7 +1,15 @@
-from fastapi import Depends, Request
+from uuid import UUID
 
+from fastapi import (
+    Depends,
+    Request,
+    HTTPException,
+    status
+)
 from app.services.user_service import UserService
 from core.containers.base_container import BaseContainer
+from core.middleware.auth_middleware import AuthBackend
+from core.middleware.schemas.current_user import CurrentUser
 
 
 async def get_current_user(
@@ -18,3 +26,22 @@ async def get_current_user(
         _type_: _description_
     """
     return await user_service.get_user_by_id(request.user.id)
+
+
+async def get_auth_user(request: Request) -> CurrentUser:
+    """_summary_
+
+    Args:
+        request (Request): _description_
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        CurrentUser: _description_
+    """
+    authenticated, current_user = await AuthBackend().authenticate(request)
+    if not authenticated:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
+    return current_user

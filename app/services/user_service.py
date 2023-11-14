@@ -1,3 +1,5 @@
+"""
+"""
 from typing import (
     List,
     Awaitable
@@ -8,6 +10,8 @@ from uuid import UUID
 from app.models.user import User
 from app.schemas.jwt import TokenSchema
 from app.repositories.user_repo import UserRepository
+from app.dto.user import UserCriteria, UserDataDTO
+
 from core.exceptions.user import (
     DuplicateEmailOrNicknameException,
     PasswordDoesNotMatchException,
@@ -16,12 +20,12 @@ from core.exceptions.user import (
 )
 from core.secure.pass_security import PasswordHandler
 from core.exceptions.base import UnauthorizedException
-
-from app.dto.user import UserCriteria, UserDataDTO
 from core.utils.token_helper import TokenHelper
 
 
 class UserService:
+    """_summary_
+    """
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
 

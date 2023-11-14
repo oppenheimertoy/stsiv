@@ -81,34 +81,6 @@ class AppConfig(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
-
-    @field_validator("SQLALCHEMY_DATABASE_URI")
-    @classmethod
-    def assemble_db_connection(cls, val: str,
-                               info: ValidationInfo) -> PostgresDsn:
-        """
-        Assemble connection string for PostgreSQL database
-
-        Args:
-            val (str): validating env param
-            info (FieldValidationInfo): validation fields from env config
-
-        Returns:
-            PostgresDsn: resulting PostgreSQL connection string
-        """
-        if val:
-            return val
-        return PostgresDsn(MultiHostUrl.build(
-            scheme="postgresql+psycopg2",  # using format with dialect
-            username=URLBuilder.encode_special_characters(
-                info.data["POSTGRES_USER"]),
-            password=URLBuilder.encode_special_characters(
-                info.data["POSTGRES_PASSWORD"]),
-            host=info.data["POSTGRES_SERVER"],
-            path=f"{info.data['POSTGRES_DB'] or ''}",
-        )
-        )
 
     SQLALCHEMY_ASYNC_DATABASE_URI: Optional[PostgresDsn] = None
 
@@ -137,8 +109,9 @@ class AppConfig(BaseSettings):
                 info.data["POSTGRES_PASSWORD"]),
             host=info.data["POSTGRES_SERVER"],
             path=f"{info.data['POSTGRES_DB'] or ''}",
+            )
         )
-        )
+    SEED_PATHS: Optional[str] = "core/database/seeds/params.json,core/database/seeds/tests.json"
     # App startup
     SERVER_HOST: str
     SERVER_PORT: int

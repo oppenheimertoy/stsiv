@@ -2,7 +2,6 @@
 This module contains User model implementation
 """
 from uuid import uuid4, UUID
-import bcrypt
 
 from sqlalchemy import String, Boolean
 from sqlalchemy import UUID as UUID_SQL
@@ -20,7 +19,7 @@ class User(BaseModel, TimestampMixin):
     """
     __tablename__ = 'users'
     id: Mapped[UUID] = mapped_column(
-        UUID_SQL, primary_key=True, default=uuid4())
+        UUID_SQL, primary_key=True, default=uuid4)
     username: Mapped[String] = mapped_column(String, unique=True)
     email: Mapped[String] = mapped_column(String, unique=True)
     _password: Mapped[String] = mapped_column("password", String)
@@ -37,7 +36,7 @@ class User(BaseModel, TimestampMixin):
             AttributeError: raising attribure error if password is corrupted
         """
         return self._password
-        
+
     def __repr__(self):
         return f"<User(user)(user_id={self.id}, username={self.username}, \
             email={self.email}, status={self.active})"

@@ -1,0 +1,59 @@
+{
+    "items": [
+        {
+            "identifier": 1,
+            "name": "Block Frequency Test - block length(M)",
+            "defaults": "16384"
+        },
+        {
+            "identifier": 2,
+            "name": "NonOverlapping Template Test - block length(m)",
+            "defaults": "9"
+        },
+        {
+            "identifier": 3,
+            "name": "Overlapping Template Test - block length(m)",
+            "defaults": "9"
+        },
+        {
+            "identifier": 4,
+            "name": "Approximate Entropy Test - block length(m)",
+            "defaults": "10"
+        },
+        {
+            "identifier": 5,
+            "name": "Serial Test - block length(m)",
+            "defaults": "16"
+        },
+        {
+            "identifier": 6,
+            "name": "Linear Complexity Test - block length(M)",
+            "defaults": "500"
+        },
+        {
+            "identifier": 7,
+            "name": "Number of bitcount runs (same as -i iterations)",
+            "defaults": "1"
+        },
+        {
+            "identifier": 8,
+            "name": "Uniformity bins",
+            "defaults": "sqrt(iterations) or 10 (if -O)"
+        },
+        {
+            "identifier": 9,
+            "name": "Bits to process per iteration (same as -S bitcount)",
+            "defaults": "1048576 (== 1024*1024)"
+        },
+        {
+            "identifier": 10,
+            "name": "Uniformity Cutoff Level",
+            "defaults": "0.0001"
+        },
+        {
+            "identifier": 11,
+            "name": "Alpha Confidence Level",
+            "defaults": "0.01"
+        }
+    ]
+}

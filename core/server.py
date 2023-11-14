@@ -17,12 +17,13 @@ from starlette.middleware.authentication import (
 from core.config import config
 from core.containers.base_container import BaseContainer
 from core.exceptions.base import CustomException
-
 from core.logging.logging_pretty import setup_logging
-
 from core.middleware.auth_middleware import (
     AuthBackend
 )
+
+from core.middleware.logging_middleware import logging_middleware
+
 from api import router
 
 import structlog
@@ -44,6 +45,7 @@ def on_auth_error(request: Request, exc: Exception):
         status_code=status_code,
         content={"error_code": error_code, "message": message},
     )
+
 
 def make_middleware() -> List[Middleware]:
     middleware = [
@@ -75,10 +77,11 @@ def create_app() -> FastAPI:
     container = BaseContainer()
 
     db_inst = container.async_db
+    
+    seeder = BaseContainer.seeder
 
     setup_logging(json_logs=config.LOG_JSON_FORMAT, log_level=config.LOG_LEVEL)
 
-    access_logger = structlog.stdlib.get_logger("api.access")
 
     factory_app = FastAPI(openapi_url="/api/v1/openapi.json",
                           title="media_ml",
@@ -86,48 +89,7 @@ def create_app() -> FastAPI:
                           debug=True,
                           middleware=make_middleware())
 
-    @factory_app.middleware("http")
-    async def logging_middleware(request: Request, call_next) -> Response:
-        structlog.contextvars.clear_contextvars()
-        # These context vars will be added to all log entries emitted during the request
-        request_id = correlation_id.get()
-        structlog.contextvars.bind_contextvars(request_id=request_id)
-
-        start_time = time.perf_counter_ns()
-        # If the call_next raises an error, we still want to return our own 500 response,
-        # so we can add headers to it (process time, request ID...)
-        response = Response(status_code=500)
-        try:
-            response = await call_next(request)
-        except Exception:
-            structlog.stdlib.get_logger(
-                "api.error").exception("Uncaught exception")
-            raise
-        finally:
-            process_time = time.perf_counter_ns() - start_time
-            status_code = response.status_code
-            url = get_path_with_query_string(request.scope)
-            client_host = request.client.host
-            client_port = request.client.port
-            http_method = request.method
-            http_version = request.scope["http_version"]
-            # Recreate the Uvicorn access log format, but add all parameters as structured information
-            access_logger.info(
-                f"""{client_host}:{client_port} - "{http_method} {url} HTTP/{http_version}" {status_code}""",
-                http={
-                    "url": str(request.url),
-                    "status_code": status_code,
-                    "method": http_method,
-                    "request_id": request_id,
-                    "version": http_version,
-                },
-                network={"client": {"ip": client_host, "port": client_port}},
-                duration=process_time,
-            )
-            response.headers["X-Process-Time"] = str(process_time / 10 ** 9)
-        return response
-
-
+    factory_app.middleware("http")(logging_middleware)
     tracing_middleware = next(
         (m for m in factory_app.user_middleware if m.cls == TraceMiddleware), None
     )
@@ -149,6 +111,7 @@ def create_app() -> FastAPI:
     @factory_app.on_event("startup")
     async def startup_event():
         await db_inst.create_database()
+        await seeder.create_seeds()
 
     @factory_app.on_event("shutdown")
     async def shutdown_db_connection():

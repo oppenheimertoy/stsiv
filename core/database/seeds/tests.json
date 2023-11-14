@@ -1,0 +1,20 @@
+{
+    "items": [
+        {"identifier": 1, "name": "Frequency"},
+        {"identifier": 2, "name": "Block Frequency"},
+        {"identifier": 3, "name": "Cumulative Sums"},
+        {"identifier": 4, "name": "Runs"},
+        {"identifier": 5, "name": "Longest Run of Ones"},
+        {"identifier": 6, "name": "Rank"},
+        {"identifier": 7, "name": "Discrete Fourier Transform"},
+        {"identifier": 8, "name": "Nonperiodic Template Matchings"},
+        {"identifier": 9, "name": "Overlapping Template Matchings"},
+        {"identifier": 10, "name": "Universal Statistical"},
+        {"identifier": 11, "name": "Approximate Entropy"},
+        {"identifier": 12, "name": "Random Excursions"},
+        {"identifier": 13, "name": "Random Excursions Variant"},
+        {"identifier": 14, "name": "Serial"},
+        {"identifier": 15, "name": "Linear Complexity"}
+    ]
+}
+
