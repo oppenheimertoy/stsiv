@@ -1,9 +1,9 @@
 import re
 
 
-def parse_multiple_longest_runs(file_path: str):
+def parse_approximate_entropy(file_path: str):
     """
-    Parses multiple 'Longest runs of ones test' data from the given file.
+    Parses multiple 'Approximate Entropy test' data from the given file.
 
     Args:
     file_path (str): The path to the file containing the test results.
@@ -15,7 +15,7 @@ def parse_multiple_longest_runs(file_path: str):
         content = file.read()
 
     # Splitting the file content by test sections
-    test_sections = content.split("Longest runs of ones test")[1:]
+    test_sections = content.split("Approximate entropy test")[1:]
 
     # Regular expressions for extracting different parts of the data
     n_m_chi2_regex = r"N \(# of blocks\)  = (\d+).*?M \(block length\) = (\d+).*?Chi\^2\s+=\s+([\d.]+)"

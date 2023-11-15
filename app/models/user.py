@@ -1,14 +1,26 @@
 """
 This module contains User model implementation
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from uuid import uuid4, UUID
 
 from sqlalchemy import String, Boolean
 from sqlalchemy import UUID as UUID_SQL
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship
+)
 
 from core.database.database import Base as BaseModel
 from core.database.mixins.timestamps import TimestampMixin
+
+
+if TYPE_CHECKING:
+    from .experiment import Experiment
+else:
+    Experiment = "Experiment"
 
 
 class User(BaseModel, TimestampMixin):
@@ -26,6 +38,9 @@ class User(BaseModel, TimestampMixin):
     name: Mapped[String] = mapped_column(String)
     surname: Mapped[String] = mapped_column(String)
     active: Mapped[Boolean] = mapped_column(Boolean, default=True)
+
+    experiments_child_rel: Mapped[Experiment] = relationship(
+        back_populates="users_parent_rel")
 
     @property
     def password(self) -> str:
