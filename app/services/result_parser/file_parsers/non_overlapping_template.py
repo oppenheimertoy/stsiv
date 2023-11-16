@@ -1,5 +1,6 @@
 import re
 
+
 def parse_non_periodic_templates_test(file_path):
     """
     Parses the 'Non-periodic Templates Test' data from the given file.
@@ -10,7 +11,7 @@ def parse_non_periodic_templates_test(file_path):
     Returns:
     list: A list of dictionaries, each containing the parsed data for one template test.
     """
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     # Splitting the file content by test sections
@@ -19,7 +20,7 @@ def parse_non_periodic_templates_test(file_path):
     # Regular expressions for extracting different parts of the data
     header_regex = r"Mean\s+=\s+([\d.]+).*?Variance\s+=\s+([\d.]+).*?M\s+=\s+(\d+).*?m\s+=\s+(\d+).*?n\s+=\s+(\d+)"
     template_data_regex = r"(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+([\d.]+)\s+([\d.]+)\s+(FAILURE|SUCCESS)\s+(\d+)"
-    
+
     parsed_results = []
 
     for section in test_sections:
@@ -49,8 +50,8 @@ def parse_non_periodic_templates_test(file_path):
 
     return parsed_results
 
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_non_periodic_templates_test(
-        '/home/oppy/bmstu/sts/results/NonOverlappingTemplate/stats.txt')
-    print(parsed_results)
+# # Using the updated parser to process the file
+# if __name__ == "__main__":
+#     parsed_results = parse_non_periodic_templates_test(
+#         '/home/oppy/bmstu/sts/results/NonOverlappingTemplate/stats.txt')
+#     print(parsed_results)

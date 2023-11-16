@@ -1,5 +1,6 @@
 import re
 
+
 def parse_approximate_entropy_test(file_path):
     """
     Parses multiple 'Approximate Entropy test' data from the given file.
@@ -42,8 +43,8 @@ def parse_approximate_entropy_test(file_path):
 
     return parsed_results
 
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_approximate_entropy_test(
-        '/home/oppy/bmstu/sts/results/ApproximateEntropy/stats.txt')
-    print(parsed_results)
+# # Using the updated parser to process the file
+# if __name__ == "__main__":
+#     parsed_results = parse_approximate_entropy_test(
+#         '/home/oppy/bmstu/sts/results/ApproximateEntropy/stats.txt')
+#     print(parsed_results)

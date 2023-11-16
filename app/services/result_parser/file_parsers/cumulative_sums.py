@@ -43,8 +43,8 @@ def parse_cumulative_sums_test(file_path):
     return parsed_results
 
 
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_cumulative_sums_test(
-        '/home/oppy/bmstu/sts/results/CumulativeSums/stats.txt')
-    print(parsed_results)
+# # Using the updated parser to process the file
+# if __name__ == "__main__":
+#     parsed_results = parse_cumulative_sums_test(
+#         '/home/oppy/bmstu/sts/results/CumulativeSums/stats.txt')
+#     print(parsed_results)

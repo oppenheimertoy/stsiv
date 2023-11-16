@@ -40,8 +40,8 @@ def parse_block_frequency_test(file_path):
 
     return parsed_results
 
-if __name__ == "__main__":
-    parsed_results = parse_block_frequency_test(
-        '/home/oppy/bmstu/sts/results/BlockFrequency/stats.txt')
-    print(parsed_results)
+# if __name__ == "__main__":
+#     parsed_results = parse_block_frequency_test(
+#         '/home/oppy/bmstu/sts/results/BlockFrequency/stats.txt')
+#     print(parsed_results)
 

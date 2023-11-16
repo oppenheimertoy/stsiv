@@ -1,0 +1,100 @@
+{
+    "tests": {
+        "alias": "-t",
+        "defaults": [0], // array of int numbers
+        "value": [1,2,3] // for example
+    },
+    "parameters": {
+        "alias": "-P",
+        "blockFrequencyTestBlockLength": {
+            "id": "1",
+            "defaults": 16384, // int value
+            "value": 18833 // for example
+        },
+        "nonOverlappingTemplateTestBlockLength":{
+            "id": "2",
+            "defaults": 9, // int value
+            "value": 4 // for example
+        },
+        "overlappingTemplateTestBlockLength": {
+            "id": "3",
+            "defaults": 9, // int value
+            "value": 9 // for example
+        },
+        "approximateEntropyTestBlockLength": {
+            "id": "4",
+            "defaults": 10, // int value
+            "value": 10 // for example
+        },
+        "serialTestBlockLength": {
+            "id": "5",
+            "defaults": 16, // int value
+            "value": 16// for example
+        },
+        "linearComplexityTestBlockLength": {
+            "id": "6",
+            "defaults": 500, // int value
+            "value": 500 // for example
+        },
+        "numberOfBitcountRuns": {
+            "id": "7",
+            "defaults": 1, // int value
+            "value": 1 // for example
+        },
+        "uniformityBins": {
+            "id": "8",
+            "defaults": 18.12, // float value
+            "value": 10.00 // for example
+        },
+        "bitsToProcessPerIteration": {
+            "id": "9",
+            "defaults": 1048576, // int value
+            "value": 1048576 // for example
+        },
+        "uniformityCutoffLevel": {
+            "id": "10",
+            "defaults": 0.0001, // int value
+            "value": 0.0001 // for example
+        },
+        "alphaConfidenceLevel": {
+            "id": "11",
+            "defaults": 0.01, // int value
+            "value": 0.01 // for example
+        }
+    },
+    "iterations": {
+        "alias": "-i",
+        "defaults": 1000, // int number
+        "value": 1000 // for example
+    },
+    "workDir": {
+        "alias": "-w",
+        "defaults": ".", // string representing some dir for results
+        "value": "/path/to/some/dir" // for example
+    },
+    "createResultFiles": {
+        "alias": "-s",
+        "defaults": "", // no value for this argument
+        "value": "" // for example
+    },
+    "randdataFormat": {
+        "alias": "-F",
+        "defaults": "r", // type of testing data
+        "value": "r" // for example
+    },
+    "bitcount": {
+        "alias": "-S",
+        "defaults": 1048576, // int number of bits per iteration
+        "value": 1048576 // for example
+    },
+    "numOfThreads": {
+        "alias": "-T",
+        "defaults": 1, // int number of threads used by sts
+        "value": 5 // for example
+    },
+    "randdataPath": {
+        "alias": "-r",
+        "defaults": null, // no default value
+        "value": "/path/to/some/file" // testing file
+    }
+}

@@ -44,8 +44,8 @@ def parse_multiple_longest_runs(file_path: str):
     return parsed_results
 
 
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_multiple_longest_runs(
-        '/home/oppy/bmstu/sts/results/LongestRun/stats.txt')
-    print(parsed_results)
+# # Using the updated parser to process the file
+# if __name__ == "__main__":
+#     parsed_results = parse_multiple_longest_runs(
+#         '/home/oppy/bmstu/sts/results/LongestRun/stats.txt')
+#     print(parsed_results)

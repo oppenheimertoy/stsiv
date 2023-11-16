@@ -1,11 +1,10 @@
 """
-This module contains Experiment model implementation
+This module contains TestResult model implementation
 """
 from __future__ import annotations
 from uuid import uuid4, UUID
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, Integer
 from sqlalchemy import UUID as UUID_SQL, ForeignKey
 from sqlalchemy.orm import (
     Mapped,
@@ -17,30 +16,29 @@ from core.database.database import Base as BaseModel
 from core.database.mixins.timestamps import TimestampMixin
 
 if TYPE_CHECKING:
-    from .user import User
     from .version import Version
+    from .test import Test
 else:
-    User = "User"
+    Test = "Test"
+    Version = "Version"
 
 
-class Experiment(BaseModel, TimestampMixin):
+class TestResult(BaseModel, TimestampMixin):
     """_summary_
 
     Args:
         BaseModel (_type_): _description_
         TimestampMixin (_type_): _description_
     """
-    __tablename__ = "experiments"
+    __tablename__ = "test_results"
     id: Mapped[UUID] = mapped_column(
         UUID_SQL, primary_key=True, default=uuid4)
     # foreign key for this users table
-    creator_id: UUID = mapped_column(UUID_SQL, ForeignKey("users.id"))
-    name: str = mapped_column(String, nullable=False)
-    description: str = mapped_column(String, default="")
-    versions_num: int = mapped_column(Integer, default=0)
+    version_id: UUID = mapped_column(UUID_SQL, ForeignKey("versions.id"))
+    test_id: UUID = mapped_column(UUID_SQL, ForeignKey("tests.id"))
 
-    users_parent_rel: Mapped[User] = relationship(
-        back_populates="experiments_child_rel")
+    versions_parent_rel: Mapped[Version] = relationship(
+        back_populates="tests_result_child_rel")
 
-    versions_child_rel: Mapped[Version] = relationship(
-        back_populates="experiments_parent_rel")
+    tests_parent_rel: Mapped[Test] = relationship(
+        back_populates="tests_result_child_rel")

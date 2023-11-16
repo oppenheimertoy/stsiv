@@ -22,6 +22,13 @@ from sqlalchemy.orm import (
 from core.database.database import Base as BaseModel
 from core.database.mixins.timestamps import TimestampMixin
 
+if TYPE_CHECKING:
+    from .experiment import Experiment
+    from .test_result import TestResult
+else:
+    Experiment = "Experiment"
+    TestResult = "TestResult"
+
 
 class Version(BaseModel, TimestampMixin):
     """_summary_
@@ -38,4 +45,10 @@ class Version(BaseModel, TimestampMixin):
     name: Mapped[str] = mapped_column(
         String, default="Version Template")  # add autonaming later
     description: Mapped[str] = mapped_column(String, default="")
-    params: Mapped[Any] = mapped_column(JSON) # params for certain version num
+    params: Mapped[Any] = mapped_column(JSON)  # params for certain version num
+
+    experiments_parent_rel: Mapped[Experiment] = relationship(
+        back_populates="versions_child_rel")
+
+    tests_result_parent_rel: Mapped[TestResult] = relationship(
+        back_populates="versions_parent_rel")

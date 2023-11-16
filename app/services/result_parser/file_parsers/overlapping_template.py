@@ -11,7 +11,7 @@ def parse_overlapping_template_test(file_path):
     Returns:
     list: A list of dictionaries, each containing the parsed data for one test.
     """
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     # Splitting the file content by test sections
@@ -45,8 +45,8 @@ def parse_overlapping_template_test(file_path):
     return parsed_results
 
 
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_overlapping_template_test(
-        '/home/oppy/bmstu/sts/results/OverlappingTemplate/stats.txt')
-    print(parsed_results)
+# # Using the updated parser to process the file
+# if __name__ == "__main__":
+#     parsed_results = parse_overlapping_template_test(
+#         '/home/oppy/bmstu/sts/results/OverlappingTemplate/stats.txt')
+#     print(parsed_results)

@@ -11,7 +11,7 @@ def parse_random_excursions_variant_test(file_path):
     Returns:
     list: A list of dictionaries, each containing the parsed data for one test.
     """
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     # Splitting the file content by test sections
@@ -43,8 +43,8 @@ def parse_random_excursions_variant_test(file_path):
     return parsed_results
 
 
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_random_excursions_variant_test(
-        '/home/oppy/bmstu/sts/results/RandomExcursionsVariant/stats.txt')
-    print(parsed_results)
+# # Using the updated parser to process the file
+# if __name__ == "__main__":
+#     parsed_results = parse_random_excursions_variant_test(
+#         '/home/oppy/bmstu/sts/results/RandomExcursionsVariant/stats.txt')
+#     print(parsed_results)

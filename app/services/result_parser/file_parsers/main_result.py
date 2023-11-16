@@ -1,5 +1,6 @@
 import re
 
+
 def parse_overall_results(file_path):
     """
     Refactored parser for the overall test results from the provided content.
@@ -10,30 +11,28 @@ def parse_overall_results(file_path):
     Returns:
     dict: A dictionary containing the parsed overall test results.
     """
-    # Regular expressions for extracting the total and passed tests
-    summary_regex = r"(\d+)/(\d+) tests passed successfully both the analyses."
-    summary_match = re.search(summary_regex, file_path)
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
 
-    if summary_match:
-        passed_tests = int(summary_match.group(1))
-        total_tests = int(summary_match.group(2))
-    else:
-        passed_tests = total_tests = None
+    summary_regex = r"(\d+)/(\d+) tests passed successfully both the analyses."
+    summary_match = re.search(summary_regex, content)
+    passed_tests = int(summary_match.group(1)) if summary_match else None
+    total_tests = int(summary_match.group(2)) if summary_match else None
 
     # Extracting individual test results
     test_results_regex = r"- The \"(.*?)\" test (.*?)(?:\n|$)"
-    test_results_matches = re.findall(test_results_regex, file_path)
-
-    test_results = {match[0]: match[1].strip() for match in test_results_matches}
+    test_results_matches = re.findall(test_results_regex, content)
+    test_results = {match[0]: match[1].strip()
+                    for match in test_results_matches}
 
     return {
         "Total_Tests": total_tests,
         "Passed_Tests": passed_tests,
         "Test_Results": test_results
     }
-    
-    
-if __name__ == "__main__":
-    parsed_results = parse_overall_results(
-        '/home/oppy/bmstu/sts/results/result.txt')
-    print(parsed_results)
+
+
+# if __name__ == "__main__":
+#     parsed_results = parse_overall_results(
+#         '/home/oppy/Projects/random/sts/results/aes_cbc/result.txt')
+#     print(parsed_results)
