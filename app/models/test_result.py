@@ -34,8 +34,8 @@ class TestResult(BaseModel, TimestampMixin):
     id: Mapped[UUID] = mapped_column(
         UUID_SQL, primary_key=True, default=uuid4)
     # foreign key for this users table
-    version_id: UUID = mapped_column(UUID_SQL, ForeignKey("versions.id"))
-    test_id: UUID = mapped_column(UUID_SQL, ForeignKey("tests.id"))
+    version_id: Mapped[UUID] = mapped_column(UUID_SQL, ForeignKey("versions.id"))
+    test_id: Mapped[UUID] = mapped_column(UUID_SQL, ForeignKey("tests.id"))
 
     versions_parent_rel: Mapped[Version] = relationship(
         back_populates="tests_result_child_rel")

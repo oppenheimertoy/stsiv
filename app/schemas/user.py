@@ -8,7 +8,7 @@ class GetUserListResponseSchema(BaseModel):
     nickname: str = Field(..., description="Nickname")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class LoginResponseSchema(BaseModel):

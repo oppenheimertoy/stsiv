@@ -1,8 +1,17 @@
-# from app.controllers import AuthController, TaskController, UserController
-from app.repositories.user_repo import UserRepository
-from app.services.user_service import UserService
-from app.models.params import Parameter
-from app.models.test import Test
+"""
+"""
+from app.repositories import (
+    UserRepository,
+    ExperimentRepository
+)
+from app.services import (
+    UserService,
+    ExperimentService
+)
+from app.models import (
+    Parameter,
+    Test,
+)
 
 from core.database.database import AsyncEngineController
 from core.config import config
@@ -24,6 +33,9 @@ class BaseContainer:
         Parameter, async_db.session)
     tests_repository: AsyncBaseRepository = AsyncBaseRepository(
         Test, async_db.session)
+    experiment_repository: ExperimentRepository = ExperimentRepository(
+        async_db.session
+    )
 
     seeder: Seeder = Seeder([params_repository, tests_repository])
 
@@ -35,4 +47,14 @@ class BaseContainer:
         """
         return UserService(
             user_repo=self.user_repository
+        )
+
+    def get_experiment_service(self) -> ExperimentService:
+        """_summary_
+
+        Returns:
+            ExperimentService: _description_
+        """
+        return ExperimentService(
+            experiment_repo=self.experiment_repository
         )

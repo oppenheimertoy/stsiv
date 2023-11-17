@@ -1,4 +1,8 @@
-{
+"""
+"""
+import json
+
+default_params = json.loads("""{
     "tests": {
         "alias": "-t",
         "value": [0]
@@ -70,4 +74,4 @@
         "alias": "-T",
         "value": 1
     }
-}
+}""")
