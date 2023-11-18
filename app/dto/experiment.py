@@ -14,4 +14,3 @@ class ExperimentDataDTO:
     creator_id: UUID
     name: str
     description: str
-

@@ -7,7 +7,7 @@ from typing import (
 from uuid import UUID
 
 from app.schemas.response.experiment import GetExperimentSchema
-from app.repositories.experiment_repo import ExperimentRepository
+from app.repositories import ExperimentRepository
 from app.dto.experiment import ExperimentDataDTO
 
 

@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from .version import Version
 else:
     User = "User"
+    Version = "Version"
 
 
 class Experiment(BaseModel, TimestampMixin):

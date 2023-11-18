@@ -13,7 +13,8 @@ class AuthenticationRequiredException(CustomException):
 class AuthenticationRequired:
     def __init__(
         self,
-        token: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+        token: HTTPAuthorizationCredentials = Depends(
+            HTTPBearer(auto_error=False)),
     ):
         if not token:
             raise AuthenticationRequiredException()

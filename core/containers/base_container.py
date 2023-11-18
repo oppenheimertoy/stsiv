@@ -2,11 +2,13 @@
 """
 from app.repositories import (
     UserRepository,
-    ExperimentRepository
+    ExperimentRepository,
+    VersionRepository
 )
 from app.services import (
     UserService,
-    ExperimentService
+    ExperimentService,
+    VersionService
 )
 from app.models import (
     Parameter,
@@ -36,6 +38,9 @@ class BaseContainer:
     experiment_repository: ExperimentRepository = ExperimentRepository(
         async_db.session
     )
+    version_repository: VersionRepository = VersionRepository(
+        async_db.session
+    )
 
     seeder: Seeder = Seeder([params_repository, tests_repository])
 
@@ -57,4 +62,14 @@ class BaseContainer:
         """
         return ExperimentService(
             experiment_repo=self.experiment_repository
+        )
+
+    def get_version_service(self) -> VersionService:
+        """_summary_
+
+        Returns:
+            VersionService: _description_
+        """
+        return VersionService(
+            version_repo=self.version_repository
         )

@@ -2,6 +2,8 @@ import json
 
 
 class STSConfig:
+    """_summary_
+    """
     def __init__(self, file_path: str, json_config=None):
         # Initialize with default values
         self.file_path: str = file_path
@@ -103,24 +105,3 @@ class STSConfig:
             if param_key != "alias" and "id" in param_value:
                 param_cmd.append(f"{param_value['id']}={param_value['value']}")
         return ','.join(param_cmd)
-
-
-# Example usage
-json_config_from_db = {
-    "tests": {
-        "value": [1,4,6,7]
-    },
-    "parameters": {
-        "blockFrequencyTestBlockLength": {
-            "id": "1",
-            "value": 10240
-        },
-        "nonOverlappingTemplateTestBlockLength": {
-            "id": "2",
-            "value": 5
-        }
-    }
-}
-sts_config = STSConfig(json_config=json_config_from_db, file_path="/home/oppy/Projects/random/data/counter.bin")
-command = sts_config.generate_command()
-print(command)

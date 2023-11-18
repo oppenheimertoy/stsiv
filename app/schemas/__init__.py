@@ -13,5 +13,6 @@ from .user import (
 from .request import *
 from .response import *
 
+
 __all__ = ['TokenSchema', 'GetUserListResponseSchema',
            'CurrentUser']

@@ -9,5 +9,12 @@ from .experiment import (
     CreateExperimentRequest
 )
 
+from .version import (
+    CreateVersionRequest,
+    ListVersionRequest,
+    VersionParamsRequest
+)
+
 __all__ = ['LoginUserRequest', 'RegisterUserRequest',
-           'CreateExperimentRequest']
+           'CreateExperimentRequest', 'CreateVersionRequest',
+           'ListVersionRequest', 'VersionParamsRequest']
