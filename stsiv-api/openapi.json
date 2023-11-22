@@ -1,0 +1,942 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "media_ml",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/api/v1/user/list": {
+            "get": {
+                "summary": "Get Users",
+                "description": "_summary_\n\nArgs:\n    user_service (UserController, optional): _description_. \n    Defaults to Depends(Factory().get_user_controller).\n\nReturns:\n    list[UserResponse]: _description_",
+                "operationId": "get_users_api_v1_user_list_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserResponse"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get Users Api V1 User List Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/sign-up": {
+            "post": {
+                "summary": "Register User",
+                "description": "_summary_\n\nArgs:\n    register_user_request (RegisterUserRequest): _description_\n    user_service (UserService, optional): _description_. Defaults to Depends(BaseContainer().get_user_service).\n\nReturns:\n    UserResponse: _description_",
+                "operationId": "register_user_api_v1_user_sign_up_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterUserRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/sign-in": {
+            "post": {
+                "summary": "Login User",
+                "description": "_summary_\n\nArgs:\n    login_user_request (LoginUserRequest): _description_\n    user_service (UserService, optional): _description_. Defaults to Depends(BaseContainer().get_user_service).\n\nReturns:\n    TokenSchema: _description_",
+                "operationId": "login_user_api_v1_user_sign_in_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginUserRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenSchema"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/me": {
+            "get": {
+                "summary": "Get User",
+                "description": "_summary_\n\nArgs:\n    current_user (CurrentUser, optional): _description_. Defaults to Depends(get_auth_user).\n    user (User, optional): _description_. Defaults to Depends(get_current_user).\n\nReturns:\n    UserResponse: _description_",
+                "operationId": "get_user_api_v1_user_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/health/ishealth": {
+            "get": {
+                "summary": "Get Health",
+                "description": "This route is used in shell script as PING analogue.\n\nReturns:\n    Application status if everything were fine.",
+                "operationId": "get_health_api_v1_health_ishealth_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/health/ping": {
+            "get": {
+                "summary": "Ping",
+                "description": "Simple route to check if service is running.\n\nReturns:\n    A simple 'pong' message.",
+                "operationId": "ping_api_v1_health_ping_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/experiment/list": {
+            "get": {
+                "summary": "Get User Experiments",
+                "description": "_summary_\n\nArgs:\n    current_user (CurrentUser, optional): _description_. Defaults to Depends(get_auth_user).\n    experiment_service (ExperimentService, optional): _description_. \n    Defaults to Depends(BaseContainer().get_experiment_service).\n\nReturns:\n    List[GetExperimentSchema]: _description_",
+                "operationId": "get_user_experiments_api_v1_experiment_list_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetExperimentSchema"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get User Experiments Api V1 Experiment List Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/experiment/create": {
+            "post": {
+                "summary": "Create Experiment",
+                "description": "_summary_\n\nArgs:\n    experiment_data (CreateExperimentRequest): _description_\n    current_user (CurrentUser, optional): _description_. Defaults to Depends(get_auth_user).\n\nReturns:\n    GetExperimentSchema: _description_",
+                "operationId": "create_experiment_api_v1_experiment_create_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateExperimentRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetExperimentSchema"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/version/list": {
+            "get": {
+                "summary": "Get Experiment Versions",
+                "description": "_summary_\n\nArgs:\n    current_user (CurrentUser, optional): _description_. Defaults to Depends(get_auth_user).\n    version_service (VersionService, optional): _description_. Defaults to Depends( BaseContainer().get_version_service ).\n\nReturns:\n    List[GetVersionSchema]: _description_",
+                "operationId": "get_experiment_versions_api_v1_version_list_get",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ListVersionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetVersionSchema"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get Experiment Versions Api V1 Version List Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/version/create": {
+            "post": {
+                "summary": "Create Experiment",
+                "description": "_summary_\n\nArgs:\n    experiment_data (CreateExperimentRequest): _description_\n    current_user (CurrentUser, optional): _description_. Defaults to Depends(get_auth_user).\n\nReturns:\n    GetExperimentSchema: _description_",
+                "operationId": "create_experiment_api_v1_version_create_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateVersionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetVersionSchema"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/version/{version_id}/upload": {
+            "post": {
+                "summary": "Upload File For Version",
+                "description": "_summary_\n\nArgs:\n    version_id (UUID): _description_\n    file (UploadFile, optional): _description_. Defaults to File(...).\n    current_user (CurrentUser, optional): _description_. Defaults to Depends( get_auth_user).\n    is_data_file (bool, optional): _description_. Defaults to True.\n    version_service (VersionService, optional): _description_. \n    Defaults to Depends( BaseContainer().get_version_service).\n\nReturns:\n    _type_: _description_",
+                "operationId": "upload_file_for_version_api_v1_version__version_id__upload_post",
+                "parameters": [
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Version Id"
+                        }
+                    },
+                    {
+                        "name": "is_data_file",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true,
+                            "title": "Is Data File"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_file_for_version_api_v1_version__version_id__upload_post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/version/{version_id}/params": {
+            "put": {
+                "summary": "Update Versions Params",
+                "description": "_summary_\n\nArgs:\n    version_id (UUID): _description_\n    params (VersionParamsRequest): _description_\n\nReturns:\n    GetVersionSchema: _description_",
+                "operationId": "update_versions_params_api_v1_version__version_id__params_put",
+                "parameters": [
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Version Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VersionParamsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetVersionSchema"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/version/{version_id}/run": {
+            "post": {
+                "summary": "Run Tests",
+                "description": "_summary_\n\nArgs:\n    version_id (UUID): _description_\n    current_user (CurrentUser, optional): _description_. Defaults to Depends( get_auth_user).\n    version_service (VersionService, optional): _description_. Defaults to Depends( BaseContainer().get_version_service).\n\nReturns:\n    str: _description_",
+                "operationId": "run_tests_api_v1_version__version_id__run_post",
+                "parameters": [
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Version Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Body_upload_file_for_version_api_v1_version__version_id__upload_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_upload_file_for_version_api_v1_version__version_id__upload_post"
+            },
+            "Command": {
+                "properties": {
+                    "alias": {
+                        "type": "string",
+                        "title": "Alias"
+                    },
+                    "value": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "items": {
+                                    "type": "integer"
+                                },
+                                "type": "array"
+                            }
+                        ],
+                        "title": "Value"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "alias",
+                    "value"
+                ],
+                "title": "Command"
+            },
+            "CreateExperimentRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "minLength": 4,
+                        "title": "Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description",
+                        "description": "Researching new theory about..."
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "CreateExperimentRequest",
+                "description": "_summary_\n\nArgs:\n    BaseModel (_type_): _description_"
+            },
+            "CreateVersionRequest": {
+                "properties": {
+                    "experiment_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Experiment Id"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description",
+                        "description": "In this version we changed..."
+                    }
+                },
+                "type": "object",
+                "title": "CreateVersionRequest",
+                "description": "_summary_\n\nArgs:\n    BaseModel (_type_): _description_"
+            },
+            "GetExperimentSchema": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Id"
+                    },
+                    "creator_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Creator Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "versions_num": {
+                        "type": "integer",
+                        "title": "Versions Num"
+                    }
+                },
+                "type": "object",
+                "title": "GetExperimentSchema",
+                "description": "_summary_\n\nArgs:\n    BaseModel (_type_): _description_"
+            },
+            "GetVersionSchema": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Id"
+                    },
+                    "experiment_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Experiment Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "params": {
+                        "title": "Params",
+                        "description": "params for certain version"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "params"
+                ],
+                "title": "GetVersionSchema",
+                "description": "_summary_\n\nArgs:\n    BaseModel (_type_): _description_"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "ListVersionRequest": {
+                "properties": {
+                    "experiment_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Experiment Id"
+                    }
+                },
+                "type": "object",
+                "title": "ListVersionRequest",
+                "description": "_summary_\n\nArgs:\n    BaseModel (_type_): _description_"
+            },
+            "LoginUserRequest": {
+                "properties": {
+                    "token": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "email"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Token"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "token",
+                    "password"
+                ],
+                "title": "LoginUserRequest"
+            },
+            "ParameterItem": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "value": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "title": "Value"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "value"
+                ],
+                "title": "ParameterItem"
+            },
+            "Parameters": {
+                "properties": {
+                    "alias": {
+                        "type": "string",
+                        "title": "Alias"
+                    },
+                    "blockFrequencyTestBlockLength": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "nonOverlappingTemplateTestBlockLength": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "overlappingTemplateTestBlockLength": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "approximateEntropyTestBlockLength": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "serialTestBlockLength": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "linearComplexityTestBlockLength": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "numberOfBitcountRuns": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "uniformityBins": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "bitsToProcessPerIteration": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "uniformityCutoffLevel": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    },
+                    "alphaConfidenceLevel": {
+                        "$ref": "#/components/schemas/ParameterItem"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "alias",
+                    "blockFrequencyTestBlockLength",
+                    "nonOverlappingTemplateTestBlockLength",
+                    "overlappingTemplateTestBlockLength",
+                    "approximateEntropyTestBlockLength",
+                    "serialTestBlockLength",
+                    "linearComplexityTestBlockLength",
+                    "numberOfBitcountRuns",
+                    "uniformityBins",
+                    "bitsToProcessPerIteration",
+                    "uniformityCutoffLevel",
+                    "alphaConfidenceLevel"
+                ],
+                "title": "Parameters"
+            },
+            "RegisterUserRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "password2": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 8,
+                        "title": "Password2"
+                    },
+                    "password1": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 8,
+                        "title": "Password1"
+                    },
+                    "username": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 3,
+                        "title": "Username"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "surname": {
+                        "type": "string",
+                        "title": "Surname"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "password2",
+                    "password1",
+                    "username",
+                    "name",
+                    "surname"
+                ],
+                "title": "RegisterUserRequest"
+            },
+            "TokenSchema": {
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "title": "Token",
+                        "description": "Token"
+                    },
+                    "refresh_token": {
+                        "type": "string",
+                        "title": "Refresh Token",
+                        "description": "Refresh token"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "token",
+                    "refresh_token"
+                ],
+                "title": "TokenSchema"
+            },
+            "UserResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid4",
+                        "title": "Id",
+                        "example": "a3b8f042-1e16-4f0a-a8f0-421e16df0a2f"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email",
+                        "example": "john.doe@example.com"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username",
+                        "example": "john.doe"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "email",
+                    "username"
+                ],
+                "title": "UserResponse",
+                "description": "_summary_\n\nArgs:\n    BaseModel (_type_): _description_"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            },
+            "VersionParamsRequest": {
+                "properties": {
+                    "tests": {
+                        "$ref": "#/components/schemas/Command"
+                    },
+                    "parameters": {
+                        "$ref": "#/components/schemas/Parameters"
+                    },
+                    "iterations": {
+                        "$ref": "#/components/schemas/Command"
+                    },
+                    "createResultFiles": {
+                        "$ref": "#/components/schemas/Command"
+                    },
+                    "bitcount": {
+                        "$ref": "#/components/schemas/Command"
+                    },
+                    "numOfThreads": {
+                        "$ref": "#/components/schemas/Command"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "tests",
+                    "parameters",
+                    "iterations",
+                    "createResultFiles",
+                    "bitcount",
+                    "numOfThreads"
+                ],
+                "title": "VersionParamsRequest"
+            }
+        },
+        "securitySchemes": {
+            "HTTPBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

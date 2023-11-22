@@ -1,0 +1,9 @@
+body {
+    background-color: #121212; /* Dark background color */
+    color: #ffffff; /* White text color for better contrast */
+    margin: 0; /* Reset default margin */
+}
+
+body .moving-text-container .moving-text {
+    background-color: transparent !important;
+}
