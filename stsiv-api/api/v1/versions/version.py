@@ -10,7 +10,10 @@ from fastapi import (
     File
 )
 
-from app.services import VersionService
+from app.services import (
+    VersionService,
+    TestResultService,
+)
 from app.schemas import (
     GetVersionSchema,
     CreateVersionRequest,
@@ -103,6 +106,8 @@ async def update_versions_params(
     params: VersionParamsRequest,
     current_user: CurrentUser = Depends(
         get_auth_user),
+    test_result_service: TestResultService = Depends(
+        BaseContainer().get_test_result_service),
     version_service: VersionService = Depends(
         BaseContainer().get_version_service)
 ) -> GetVersionSchema:
@@ -115,9 +120,14 @@ async def update_versions_params(
     Returns:
         GetVersionSchema: _description_
     """
-    updated_version = await version_service.update_version_params(version_id=version_id,
-                                                                  new_params=params)
-    print(updated_version.params)
+    updated_version = await version_service.update_version_params(
+        version_id=version_id,
+        new_params=params
+    )
+    await test_result_service.create_result(
+        version_id=version_id,
+        test_identifiers=params.tests.value
+    )
     return updated_version
 
 

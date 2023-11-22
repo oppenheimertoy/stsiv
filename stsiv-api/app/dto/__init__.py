@@ -14,5 +14,13 @@ from .version import (
     VersionDataDTO
 )
 
-__all__ = ['ExperimentDataDTO', 'UserCriteria', 'UserDataDTO',
-           'VersionDataDTO']
+from .test_result import (
+    TestResultDataDTO
+)
+
+__all__ = ['ExperimentDataDTO',
+           'UserCriteria',
+           'UserDataDTO',
+           'VersionDataDTO',
+           'TestResultDataDTO'
+           ]

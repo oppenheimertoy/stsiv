@@ -190,23 +190,26 @@ class AsyncBaseRepository(AsyncAbstractRepository,
                 await session.rollback()
                 raise exc
 
-    async def async_batch_create(self, items: List[CreateSchema]) -> List[ModelT]:
+    async def async_batch_create(self, items: List[ModelT]) -> List[ModelT]:
         """
         Create multiple records in the database in a batch operation.
+
+        Args:
+            items (List[ModelT]): A list of SQLAlchemy model instances to be created.
+
+        Returns:
+            List[ModelT]: A list of created SQLAlchemy model instances.
         """
         async with self.session_factory() as session:
             try:
-                # Convert Pydantic models to SQLAlchemy models and add them to the session
-                db_items = [self.model_cls(**item.model_dump())
-                            for item in items]
-                session.add_all(db_items)
+                session.add_all(items)
                 await session.commit()
 
                 # Refresh the instances to get any updated
                 # fields from the DB (like auto-generated IDs)
-                for item in db_items:
+                for item in items:
                     await session.refresh(item)
-                return db_items
+                return items
             except DBAPIError as exc:
                 await session.rollback()
                 raise exc

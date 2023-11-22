@@ -3,16 +3,19 @@
 from app.repositories import (
     UserRepository,
     ExperimentRepository,
-    VersionRepository
+    VersionRepository,
+    TestRepository,
+    TestResultRepository
 )
 from app.services import (
     UserService,
     ExperimentService,
-    VersionService
+    VersionService,
+    TestService,
+    TestResultService
 )
 from app.models import (
     Parameter,
-    Test,
 )
 
 from core.database.database import AsyncEngineController
@@ -33,16 +36,20 @@ class BaseContainer:
     user_repository: UserRepository = UserRepository(async_db.session)
     params_repository: AsyncBaseRepository = AsyncBaseRepository(
         Parameter, async_db.session)
-    tests_repository: AsyncBaseRepository = AsyncBaseRepository(
-        Test, async_db.session)
     experiment_repository: ExperimentRepository = ExperimentRepository(
         async_db.session
     )
     version_repository: VersionRepository = VersionRepository(
         async_db.session
     )
+    test_repository: TestRepository = TestRepository(
+        async_db.session
+    )
+    test_result_repository: TestResultRepository = TestResultRepository(
+        async_db.session
+    )
 
-    seeder: Seeder = Seeder([params_repository, tests_repository])
+    seeder: Seeder = Seeder([params_repository, test_repository])
 
     def get_user_service(self) -> UserService:
         """_summary_
@@ -72,4 +79,25 @@ class BaseContainer:
         """
         return VersionService(
             version_repo=self.version_repository
+        )
+
+    def get_test_service(self) -> TestService:
+        """_summary_
+
+        Returns:
+            TestRepository: _description_
+        """
+        return TestService(
+            test_repo=self.test_repository
+        )
+
+    def get_test_result_service(self) -> TestResultService:
+        """_summary_
+
+        Returns:
+            TestResultService: _description_
+        """
+        return TestResultService(
+            test_repo=self.test_repository,
+            test_result_repo=self.test_result_repository
         )
