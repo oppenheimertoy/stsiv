@@ -42,10 +42,3 @@ def parse_approximate_entropy_test(file_path):
         parsed_results.append(test_data)
 
     return parsed_results
-
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_approximate_entropy_test(
-        '/home/oppy/Projects/random/stsiv/stsiv-api/result/67bd0ae8-36df-48c5-abd1-c8717e724a2d/result/ApproximateEntropy/stats.txt')
-    print(parsed_results)
- 

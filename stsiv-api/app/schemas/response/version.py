@@ -8,7 +8,7 @@ class GetVersionSchema(BaseModel):
     Args:
         BaseModel (_type_): _description_
     """
-    id: UUID =  Field(UUID)
+    id: UUID = Field(UUID)
     experiment_id: UUID = Field(UUID)
     name: str = Field(str)
     description: str = Field(str)

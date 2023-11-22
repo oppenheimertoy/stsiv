@@ -36,7 +36,7 @@ class UserRepository(AsyncBaseRepository):
         Returns:
             bool: True - if exists, False overwise
         """
-        if await self.async_exists(**user_crit.to_dict()):
+        if await self.async_exists(filters=user_crit.to_dict()):
             return True
         return False
 

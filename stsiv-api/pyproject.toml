@@ -30,6 +30,7 @@ asgi-correlation-id = "^4.2.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.6"
 aiofiles = "^23.2.1"
+matplotlib = "^3.8.2"
 
 
 [build-system]

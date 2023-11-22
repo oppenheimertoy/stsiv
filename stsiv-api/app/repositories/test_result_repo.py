@@ -61,4 +61,4 @@ class TestResultRepository(AsyncBaseRepository):
             result = await session.execute(
                 select(TestResult).where(TestResult.version_id == version_id)
             )
-            return result.scalar.all()
+            return result.scalars().all()

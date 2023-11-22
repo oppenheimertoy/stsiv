@@ -15,6 +15,11 @@ from .version import (
     VersionParamsRequest
 )
 
+from .result import (
+    ListResultsRequest
+)
+
 __all__ = ['LoginUserRequest', 'RegisterUserRequest',
            'CreateExperimentRequest', 'CreateVersionRequest',
-           'ListVersionRequest', 'VersionParamsRequest']
+           'ListVersionRequest', 'VersionParamsRequest',
+           'ListResultsRequest']

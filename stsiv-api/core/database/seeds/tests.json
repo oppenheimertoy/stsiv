@@ -1,20 +1,20 @@
 {
     "items": [
         {"identifier": 1, "name": "Frequency"},
-        {"identifier": 2, "name": "Block Frequency"},
-        {"identifier": 3, "name": "Cumulative Sums"},
+        {"identifier": 2, "name": "BlockFrequency"},
+        {"identifier": 3, "name": "CumulativeSums"},
         {"identifier": 4, "name": "Runs"},
-        {"identifier": 5, "name": "Longest Run of Ones"},
+        {"identifier": 5, "name": "LongestRun"},
         {"identifier": 6, "name": "Rank"},
-        {"identifier": 7, "name": "Discrete Fourier Transform"},
-        {"identifier": 8, "name": "Nonperiodic Template Matchings"},
-        {"identifier": 9, "name": "Overlapping Template Matchings"},
-        {"identifier": 10, "name": "Universal Statistical"},
-        {"identifier": 11, "name": "Approximate Entropy"},
-        {"identifier": 12, "name": "Random Excursions"},
-        {"identifier": 13, "name": "Random Excursions Variant"},
+        {"identifier": 7, "name": "DFT"},
+        {"identifier": 8, "name": "NonOverlappingTemplate"},
+        {"identifier": 9, "name": "OverlappingTemplate"},
+        {"identifier": 10, "name": "Universal"},
+        {"identifier": 11, "name": "ApproximateEntropy"},
+        {"identifier": 12, "name": "RandomExcursions"},
+        {"identifier": 13, "name": "RandomExcursionsVariant"},
         {"identifier": 14, "name": "Serial"},
-        {"identifier": 15, "name": "Linear Complexity"}
+        {"identifier": 15, "name": "LinearComplexity"}
     ]
 }
 

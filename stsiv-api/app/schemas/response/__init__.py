@@ -14,4 +14,12 @@ from .version import (
     GetVersionSchema
 )
 
-__all__ = ['GetExperimentSchema', 'UserResponse', 'GetVersionSchema']
+from .result import (
+    GetResultSchema
+)
+
+__all__ = ['GetExperimentSchema',
+           'UserResponse',
+           'GetVersionSchema',
+           'GetResultSchema'
+           ]
