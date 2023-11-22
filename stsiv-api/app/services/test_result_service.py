@@ -120,7 +120,7 @@ class TestResultService:
 
         results_file_path = result_folder_path / 'results.txt'
         stats_file_path = result_folder_path / 'stats.txt'
-        
+
         return self._plot_p_values(
             p_values=parse_pvalues(results_file_path),
             test_type=test_type.name,
@@ -147,13 +147,12 @@ class TestResultService:
             stats_file_path (_type_): _description_
         """
         stats = parse_approximate_entropy_test(stats_file_path)
-        
-        
+
     def _plot_p_values(
-        self, 
+        self,
         p_values: List[float],
         test_type: str,
-        result_folder: Path               
+        result_folder: Path
     ):
         """_summary_
 
