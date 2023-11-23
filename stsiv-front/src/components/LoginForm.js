@@ -31,7 +31,7 @@ const LoginForm = () => {
     };
 
     const cardStyle = {
-        backgroundColor: '#0e0f0d', // Dark background color for the card
+        backgroundColor: '#2A2A2A', // Dark background color for the card
         color: '#fff', // White text color
         borderRadius: '15px' // Optional: if you want rounded corners
     };
@@ -47,7 +47,9 @@ const LoginForm = () => {
     const buttonStyle = {
         backgroundColor: '#3c5920', // Green background for the button
         borderColor: '#4CAF50',
-        color: '#fff' // White text color for the button
+        color: '#fff', // White text color for the button
+        maxWidth: '200px',
+        margin: '0 auto'
     };
 
     const overlayStyle = {
@@ -72,23 +74,32 @@ const LoginForm = () => {
                     <MDBCol md='6'>
                         <TypeAnimation
                             sequence={[
-                                'Test your data using Approximate Entropy',
+                                'Test your data using \
+                                Approximate Entropy',
                                 1000,
-                                'Test your data using Block Frequency',
+                                'Test your data using \
+                                Block Frequency',
                                 1000,
-                                'Test your data using Cumulative Sums',
+                                'Test your data using \
+                                Cumulative Sums',
                                 1000,
-                                'Test your data using DFT',
+                                'Test your data using \
+                                DFT',
                                 1000,
-                                'Test your data using Frequency',
+                                'Test your data using \
+                                Frequency',
                                 1000,
-                                'Test your data using Linear Complexity',
+                                'Test your data using \
+                                Linear Complexity',
                                 1000,
-                                'Test your data using Longest Run',
+                                'Test your data using \
+                                Longest Run',
                                 1000,
-                                'Test your data using Non Overlapping Template',
+                                'Test your data using       \
+                                Non Overlapping Template',
                                 1000,
-                                'Test your data using Random Excursions',
+                                'Test your data using \
+                                Random Excursions',
                                 1000,
                             ]}
                             wrapper="span"
@@ -118,6 +129,9 @@ const LoginForm = () => {
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                                 <MDBBtn type="submit" style={buttonStyle} className="mb-4 w-100">Sign in</MDBBtn>
+                                <p className="text-center mt-5 mb-0">
+                                    Do not have account yet? <a href="#!" onClick={() => navigate('/register')} className="login-link"><u>Sign-up here</u></a>
+                                </p>
                             </form>
                         </MDBCardBody>
                     </MDBCol>

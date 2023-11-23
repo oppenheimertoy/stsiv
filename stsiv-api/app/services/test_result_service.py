@@ -2,11 +2,13 @@
 """
 from typing import (
     List,
-    Awaitable
+    Awaitable,
+    Dict
 )
 from uuid import UUID
 from pathlib import Path
 from matplotlib import pyplot as plt
+import numpy as np
 from app.repositories import (
     TestResultRepository,
     TestRepository
@@ -121,32 +123,120 @@ class TestResultService:
         results_file_path = result_folder_path / 'results.txt'
         stats_file_path = result_folder_path / 'stats.txt'
 
-        return self._plot_p_values(
+        self._plot_p_values(
             p_values=parse_pvalues(results_file_path),
             test_type=test_type.name,
             result_folder=result_folder_path
         )
+        
+        # Process based on test type
+        if test_identifier == 11:
+            stats_data = parse_approximate_entropy_test(
+                stats_file_path)
+            custom_plot_path = self._plot_approx_entropy_test_results(
+                parsed_results=stats_data,
+                result_folder=result_folder_path
+            )
+            return {"stats_data": stats_data}
 
-        # # Process based on test type
-        # if test_identifier == 11:
-        #     p_values, stats_data = self._parse_approximate_entropy(
-        #         results_file_path, stats_file_path)
-        #     p_values_plot_path = self.plot_p_values(p_values, test_type.name)
-        #     return {"p_values_plot": p_values_plot_path, "stats_data": stats_data}
-        # # Handle other test types similarly
+        elif test_identifier == 2:
+            stats_data = parse_block_frequency_test(stats_file_path)
+            custom_plot_path = self._plot_block_frequency_test_results(
+                parsed_results=stats_data,
+                result_folder=result_folder_path
+            )
+            return {"stats_data": stats_data}
+            
+        else: 
+            return {"Error during getting results process"}
 
-    def _parse_approximate_entropy(
+    def _plot_approx_entropy_test_results(
         self,
-        results_file_path,
-        stats_file_path
+        parsed_results: Dict,
+        result_folder: Path
     ):
         """_summary_
 
         Args:
-            results_file_path (_type_): _description_
-            stats_file_path (_type_): _description_
+            parsed_results (Dict): _description_
+            result_folder (_type_): _description_
+
+        Returns:
+            _type_: _description_
         """
-        stats = parse_approximate_entropy_test(stats_file_path)
+        # Extracting the relevant metrics
+        chi_squared = [result['Chi_squared'] for result in parsed_results]
+        phi_m = [result['Phi_m'] for result in parsed_results]
+        phi_m_plus_1 = [result['Phi_m_plus_1'] for result in parsed_results]
+        apen = [result['ApEn'] for result in parsed_results]
+
+        # Number of test runs
+        n = len(parsed_results)
+
+        # Bar positions
+        r = np.arange(n)
+        barWidth = 0.2
+
+        # Create bars
+        plt.bar(r, chi_squared, color='blue', width=barWidth, edgecolor='grey', label='Chi^2')
+        plt.bar(r + barWidth, phi_m, color='red', width=barWidth, edgecolor='grey', label='Phi(m)')
+        plt.bar(r + 2 * barWidth, phi_m_plus_1, color='green', width=barWidth, edgecolor='grey', label='Phi(m+1)')
+        plt.bar(r + 3 * barWidth, apen, color='yellow', width=barWidth, edgecolor='grey', label='ApEn')
+
+        # Add titles and labels
+        plt.title('Approximate Entropy Test Results')
+        plt.xlabel('Test Run')
+        plt.xticks([r + barWidth for r in range(n)], ['Test ' + str(x) for x in range(1, n+1)])
+        plt.ylabel('Value')
+
+        # Create legend
+        plt.legend()
+
+        # Save plot
+        plot_path = result_folder / "custom_plot.png"
+        plt.savefig(plot_path)
+        plt.close()
+
+        return plot_path
+    
+    def _plot_block_frequency_test_results(
+        self,
+        parsed_results,
+        result_folder
+    ):
+        # Number of test runs
+        n = len(parsed_results)
+
+        # Extracting the relevant metrics
+        chi_squared = [result['Chi_squared'] for result in parsed_results]
+        num_substrings = [result['Number_of_substrings'] for result in parsed_results]
+        block_length = [result['Block_length'] for result in parsed_results]
+        bits_discarded = [result['Bits_discarded'] for result in parsed_results]
+
+        # Plotting Chi-squared values
+        plt.figure(figsize=(10, 6))
+        plt.subplot(2, 1, 1)
+        plt.bar(range(n), chi_squared, color='blue')
+        plt.title('Chi-Squared Values Over Test Runs')
+        plt.xlabel('Test Run')
+        plt.ylabel('Chi-Squared')
+
+        # Plotting Block Length and Number of Substrings
+        plt.subplot(2, 1, 2)
+        plt.plot(range(n), block_length, '-o', label='Block Length')
+        plt.plot(range(n), num_substrings, '-o', label='Number of Substrings')
+        plt.title('Block Length and Number of Substrings Over Test Runs')
+        plt.xlabel('Test Run')
+        plt.ylabel('Value')
+        plt.legend()
+
+        # Save plot for Chi-squared and Block Length/Number of Substrings
+        plot_path_1 = result_folder / "custom_plot.png"
+        plt.savefig(plot_path_1)
+        plt.close()
+
+        return plot_path_1
+
 
     def _plot_p_values(
         self,
@@ -164,7 +254,6 @@ class TestResultService:
             _type_: _description_
         """
         plot_path = result_folder / "p_val.png"
-        print(plot_path)
         plt.scatter(range(len(p_values)), p_values, color='blue')
         plt.axhline(y=0.01, color='r', linestyle='-')
         plt.title(f'P-Values Distribution for {test_type}')

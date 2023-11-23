@@ -1,7 +1,10 @@
 import re
+from typing import (
+    Dict
+)
 
 
-def parse_approximate_entropy_test(file_path):
+def parse_approximate_entropy_test(file_path) -> Dict:
     """
     Parses multiple 'Approximate Entropy test' data from the given file.
 

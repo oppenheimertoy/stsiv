@@ -1,5 +1,5 @@
 body {
-    background-color: #121212; /* Dark background color */
+    background-color: #696969; /* Dark background color */
     color: #ffffff; /* White text color for better contrast */
     margin: 0; /* Reset default margin */
 }
@@ -7,3 +7,8 @@ body {
 body .moving-text-container .moving-text {
     background-color: transparent !important;
 }
+
+.login-link {
+    color: #fff !important; /* Ensure this overrides other styles */
+    font-weight: bold;
+  }

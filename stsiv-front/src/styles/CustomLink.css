@@ -1,0 +1,4 @@
+.login-link {
+    color: #fff !important; /* Ensure this overrides other styles */
+    font-weight: bold;
+  }
