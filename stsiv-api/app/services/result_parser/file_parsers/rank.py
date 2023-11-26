@@ -45,9 +45,3 @@ def parse_rank_test(file_path):
             parsed_results.append(test_data)
 
     return parsed_results
-
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_rank_test(
-        '/home/oppy/bmstu/sts/results/Rank/stats.txt')
-    print(parsed_results)

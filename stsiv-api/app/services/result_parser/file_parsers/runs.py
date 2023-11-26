@@ -44,10 +44,4 @@ def parse_runs_test(file_path):
 
     return parsed_results
 
-# Using the updated parser to process the file
-if __name__ == "__main__":
-    parsed_results = parse_runs_test(
-        '/home/oppy/bmstu/sts/results/Runs/stats.txt')
-    print(parsed_results)
-
 
