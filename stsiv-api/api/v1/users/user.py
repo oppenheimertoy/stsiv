@@ -90,7 +90,7 @@ async def login_user(
 
 
 @user_router.get("/me", dependencies=[Depends(AuthenticationRequired)])
-def get_user(
+async def get_user(
     current_user: CurrentUser = Depends(get_auth_user),
     user: User = Depends(get_current_user)
 ) -> UserResponse:
@@ -106,3 +106,23 @@ def get_user(
     return UserResponse(id=user.id,
                         email=user.email,
                         username=user.username)
+
+
+@user_router.post("/refresh", dependencies=[Depends(AuthenticationRequired)])
+async def refresh_token(
+    tokens: TokenSchema,
+    user_service: UserService = Depends(BaseContainer().get_user_service)
+) -> TokenSchema:
+    """_summary_
+
+    Args:
+        user_service (UserService, optional): _description_. 
+        Defaults to Depends(BaseContainer().get_user_service).
+
+    Returns:
+        TokenSchema: _description_
+    """
+    return await user_service.refresh_token(
+        access_token=tokens.token,
+        refresh_token=tokens.refresh_token
+    )

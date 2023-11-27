@@ -18,7 +18,6 @@ function App() {
                 <Route path="/register" element={!isAuthenticated() ? <RegisterForm /> : <Navigate to="/experiments" />} />
                 <Route path="/experiments" element={isAuthenticated() ? <ExperimentsPage /> : <Navigate to="/login" />} />
                 <Route path="/" element={<HomePage />} />
-                {/* Add other routes here */}
             </Routes>
         </Router>
       </>

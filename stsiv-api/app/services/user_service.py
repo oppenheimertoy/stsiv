@@ -26,6 +26,7 @@ from core.utils.token_helper import TokenHelper
 class UserService:
     """_summary_
     """
+
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
 
@@ -92,7 +93,9 @@ class UserService:
 
         response = TokenSchema(
             token=TokenHelper.encode(payload={"user_id": user.id}),
-            refresh_token=TokenHelper.encode(payload={"sub": "refresh"}),
+            refresh_token=TokenHelper.encode(
+                payload={"sub": "refresh_token"},
+                expire_period=72000),
         )
         return response
 
@@ -115,7 +118,7 @@ class UserService:
             raise UnauthorizedException("Invalid refresh token")
 
         return TokenSchema(
-            access_token=TokenHelper.encode(
+            token=TokenHelper.encode(
                 payload={"user_id": token.get("user_id")}),
             refresh_token=TokenHelper.encode(payload={"sub": "refresh_token"})
         )

@@ -22,11 +22,13 @@ const LoginForm = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await login(token, password); // Call the login function
-            navigate('/experiments'); // Navigate to the experiments page on successful login
+            const response = await login(token, password);
+            console.log(response); // Log the response to check its structure
+            localStorage.setItem('accessToken', response.data.token); // Adjust this line based on the actual response structure
+            // echo(response.data.token)
+            navigate('/experiments');
         } catch (error) {
             console.error('Login error', error);
-            // Optionally handle login errors (e.g., show an error message)
         }
     };
 
@@ -41,7 +43,6 @@ const LoginForm = () => {
         flexDirection: 'column',
         justifyContent: 'center', // Center the form vertically
         height: '100%', // Take full height of the column
-        marginTop: '-100px'
     };
 
     const buttonStyle = {
@@ -72,41 +73,6 @@ const LoginForm = () => {
                     </MDBCol>
 
                     <MDBCol md='6'>
-                        <TypeAnimation
-                            sequence={[
-                                'Test your data using \
-                                Approximate Entropy',
-                                1000,
-                                'Test your data using \
-                                Block Frequency',
-                                1000,
-                                'Test your data using \
-                                Cumulative Sums',
-                                1000,
-                                'Test your data using \
-                                DFT',
-                                1000,
-                                'Test your data using \
-                                Frequency',
-                                1000,
-                                'Test your data using \
-                                Linear Complexity',
-                                1000,
-                                'Test your data using \
-                                Longest Run',
-                                1000,
-                                'Test your data using       \
-                                Non Overlapping Template',
-                                1000,
-                                'Test your data using \
-                                Random Excursions',
-                                1000,
-                            ]}
-                            wrapper="span"
-                            speed={50}
-                            style={{ fontSize: '2em', display: 'inline-block', marginTop: '80px'}}
-                            repeat={Infinity}
-                        />
                         <MDBCardBody style={formContainerStyle}>
                             <h2 className="text-white mb-4">Login</h2> {/* Header */}
                             <form onSubmit={handleLogin}>
@@ -133,6 +99,41 @@ const LoginForm = () => {
                                     Do not have account yet? <a href="#!" onClick={() => navigate('/register')} className="login-link"><u>Sign-up here</u></a>
                                 </p>
                             </form>
+                            <TypeAnimation
+                                sequence={[
+                                    'Test your data using \
+                                    Approximate Entropy',
+                                    1000,
+                                    'Test your data using \
+                                    Block Frequency',
+                                    1000,
+                                    'Test your data using \
+                                    Cumulative Sums',
+                                    1000,
+                                    'Test your data using \
+                                    DFT',
+                                    1000,
+                                    'Test your data using \
+                                    Frequency',
+                                    1000,
+                                    'Test your data using \
+                                    Linear Complexity',
+                                    1000,
+                                    'Test your data using \
+                                    Longest Run',
+                                    1000,
+                                    'Test your data using       \
+                                    Non Overlapping Template',
+                                    1000,
+                                    'Test your data using \
+                                    Random Excursions',
+                                    1000,
+                                ]}
+                                wrapper="span"
+                                speed={50}
+                                style={{ fontSize: '2em', display: 'inline-block', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}
+                                repeat={Infinity}
+                            />
                         </MDBCardBody>
                     </MDBCol>
                 </MDBRow>
