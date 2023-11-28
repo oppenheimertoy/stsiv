@@ -17,18 +17,29 @@ import { TypeAnimation } from 'react-type-animation';
 const LoginForm = () => {
     const [token, setToken] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError(''); // Reset any existing error messages
+    
         try {
             const response = await login(token, password);
-            console.log(response); // Log the response to check its structure
-            localStorage.setItem('accessToken', response.data.token); // Adjust this line based on the actual response structure
-            // echo(response.data.token)
-            navigate('/experiments');
+    
+            if (response.status === 200) {
+                localStorage.setItem('accessToken', response.data.token);
+                localStorage.setItem('refreshToken', response.data.refresh_token);
+                navigate('/experiments');
+                window.location.reload();
+            } else {
+                // Handle case where response is OK but doesn't contain expected data
+                setError('Login was successful, but the response is not as expected.');
+            }
         } catch (error) {
-            console.error('Login error', error);
+            // Handle errors from the server (like 4xx or 5xx responses)
+            setError('Failed to log in. Please check your credentials.');
+            console.error('Login error:', error);
         }
     };
 

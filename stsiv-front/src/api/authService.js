@@ -5,7 +5,7 @@ const login = async (token, password) => {
     // Assuming the API response contains access_token and refresh_token
     localStorage.setItem('accessToken', response.data.token);
     localStorage.setItem('refreshToken', response.data.refresh_token);
-    return response.data;
+    return response;
 };
 
 const logout = () => {

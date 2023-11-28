@@ -44,4 +44,4 @@ async def get_auth_user(request: Request) -> CurrentUser:
     if not authenticated:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
-    return current_user
+    return CurrentUser(id=current_user.id)
