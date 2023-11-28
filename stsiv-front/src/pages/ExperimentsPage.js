@@ -1,74 +1,139 @@
 import React, { useEffect, useState } from 'react';
 import apiClient from '../api/axios';
 import { useNavigate } from 'react-router-dom';
-import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCol } from 'mdb-react-ui-kit';
+import { MDBBtn, MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBRow, MDBCol } from 'mdb-react-ui-kit';
 
 const ExperimentsPage = () => {
     const [experiments, setExperiments] = useState([]);
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
 
-    const userInfo = {
-        name: "User Name",
-        email: "user@example.com"
-    };
-
     useEffect(() => {
-        const fetchExperiments = async () => {
+        const fetchData = async () => {
             try {
-                const response = await apiClient.get('/experiment/list');
-                setExperiments(response.data);
+                const expResponse = await apiClient.get('/experiment/list');
+                setExperiments(expResponse.data);
+
                 const userResponse = await apiClient.get('/user/me'); // Adjust the endpoint as necessary
                 setUserData(userResponse.data);
             } catch (error) {
-                console.error('Failed to fetch experiments:', error);
+                console.error('Failed to fetch data:', error);
             }
         };
 
-        fetchExperiments();
+        fetchData();
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        navigate('/'); // Redirect to the landing page
+    };
+
+    const handleCreateNewExperiment = () => {
+        navigate('/create-experiment'); // Redirect to the experiment creation page (adjust the path as needed)
+    }; 
 
     const handleExperimentClick = (experimentId) => {
         navigate(`/experiment/${experimentId}`);
     };
 
+    const cardStyle = {
+        backgroundColor: '#2A2A2A', // Dark background color for the card
+        color: '#fff', // White text color
+        borderRadius: '15px', // Rounded corners for the card
+        margin: '10px' // Margin for spacing
+    };
+
     return (
         <div className="container mt-4">
-            <div className="row">
+            <MDBRow>
                 {/* User Info Section */}
-                <div className="col-md-4">
-                    {userData && (
-                        <MDBCard className="mb-4">
+                {userData && (
+                    <MDBCol md="4">
+                        <MDBCard style={cardStyle}>
                             <MDBCardBody>
                                 <MDBCardTitle>User Information</MDBCardTitle>
                                 <MDBCardText>Email: {userData.email}</MDBCardText>
                                 <MDBCardText>Username: {userData.username}</MDBCardText>
+                                <MDBBtn color="danger" onClick={handleLogout}>Logout</MDBBtn>
                             </MDBCardBody>
                         </MDBCard>
-                    )}
-                </div>
+                    </MDBCol>
+                )}
 
-                <div className="col-md-8">
-                    <h2>Experiments</h2>
+                {/* Experiments List and New Experiment Button */}
+                <MDBCol md="8">
+                    <h2 className="text-white">Experiments</h2>
                     <div className="experiments-list">
-                        {experiments.length > 0 ? experiments.map(experiment => (
-                            <MDBCol key={experiment.id} className="mb-4">
-                                <MDBCard style={{ cursor: 'pointer' }} onClick={() => handleExperimentClick(experiment.id)}>
-                                    <MDBCardBody>
-                                        <MDBCardTitle>{experiment.name}</MDBCardTitle>
-                                        <MDBCardText>Description: {experiment.description}</MDBCardText>
-                                        <MDBCardText>Versions: {experiment.versions_num}</MDBCardText>
-                                    </MDBCardBody>
-                                </MDBCard>
-                            </MDBCol>
-                        )) : (
-                            <p>No experiments found.</p>
-                        )}
+                        {experiments.length > 0 ? (
+                                <div className="d-flex flex-column">
+                                    {experiments.map((experiment, index) => (
+                                        <MDBCard key={experiment.id} style={cardStyle} onClick={() => handleExperimentClick(experiment.id)} className={index !== 0 ? "mt-3" : ""}>
+                                            <MDBCardBody>
+                                                <MDBCardTitle>{experiment.name}</MDBCardTitle>
+                                                <MDBCardText>Description: {experiment.description}</MDBCardText>
+                                                <MDBCardText>Versions: {experiment.versions_num}</MDBCardText>
+                                            </MDBCardBody>
+                                        </MDBCard>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-white">No experiments found.</p>
+                            )}
+                        {/* ... experiments map ... */}
                     </div>
-                </div>
-            </div>
+                    {/* Create New Experiment Button */}
+                    <MDBBtn color="info" onClick={handleCreateNewExperiment} className="my-4">Create New Experiment</MDBBtn>
+                </MDBCol>
+            </MDBRow>
         </div>
     );
 };
+
+//     return (
+//         <div className="container mt-4">
+//             <MDBRow>
+//                 {/* User Info Section */}
+//                 {userData && (
+//                     <MDBCol md="4">
+//                         <MDBCard style={cardStyle}>
+//                             <MDBCardBody>
+//                                 <MDBCardTitle>User Information</MDBCardTitle>
+//                                 <MDBCardText>Email: {userData.email}</MDBCardText>
+//                                 <MDBCardText>Username: {userData.username}</MDBCardText>
+//                                 <MDBBtn color="danger" onClick={handleLogout}>Logout</MDBBtn>
+//                             </MDBCardBody>
+//                         </MDBCard>
+//                     </MDBCol>
+//                 )}
+
+//                 {/* Experiments List and New Experiment Button */}
+//                 <MDBCol md="8">
+//                     <div className="experiments-list">
+//                     <h1 className="text-white mb-3">Experiments list</h1>
+//                             {experiments.length > 0 ? (
+//                                 <div className="d-flex flex-column">
+//                                     {experiments.map((experiment, index) => (
+//                                         <MDBCard key={experiment.id} style={cardStyle} onClick={() => handleExperimentClick(experiment.id)} className={index !== 0 ? "mt-3" : ""}>
+//                                             <MDBCardBody>
+//                                                 <MDBCardTitle>{experiment.name}</MDBCardTitle>
+//                                                 <MDBCardText>Description: {experiment.description}</MDBCardText>
+//                                                 <MDBCardText>Versions: {experiment.versions_num}</MDBCardText>
+//                                             </MDBCardBody>
+//                                         </MDBCard>
+//                                     ))}
+//                                 </div>
+//                             ) : (
+//                                 <p className="text-white">No experiments found.</p>
+//                             )}
+//                     </div>
+//                     {/* Create New Experiment Button */}
+//                     <MDBBtn color="info" onClick={handleCreateNewExperiment} className="my-4">Create New Experiment</MDBBtn>
+//                 </MDBCol>
+//             </MDBRow>
+//         </div>
+//     );
+// };
 
 export default ExperimentsPage;
