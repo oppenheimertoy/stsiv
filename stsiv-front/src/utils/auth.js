@@ -1,4 +1,4 @@
 const isAuthenticated = () => {
-    return localStorage.getItem('accessToken') !== null;
+    return localStorage.getItem('accessToken') != null;
 };
 export { isAuthenticated };
