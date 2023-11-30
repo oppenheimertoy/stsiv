@@ -1,6 +1,7 @@
 """
 """
 from typing import List
+from uuid import UUID
 
 from fastapi import (
     APIRouter,
@@ -41,6 +42,28 @@ async def get_user_experiments(
         List[GetExperimentSchema]: _description_
     """
     return await experiment_service.get_user_experiments(current_user.id)
+
+
+@experiment_router.get("/{experiment_id}/info", dependencies=[Depends(AuthenticationRequired)])
+async def get_experiment_info(
+    experiment_id : UUID,
+    current_user: CurrentUser = Depends(get_auth_user),
+    experiment_service: ExperimentService = Depends(
+        BaseContainer().get_experiment_service)
+) -> GetExperimentSchema:
+    """_summary_
+
+    Args:
+        experiment_id (UUID): _description_
+        current_user (CurrentUser, optional): _description_. Defaults to Depends(get_auth_user).
+        experiment_service (ExperimentService, optional): _description_. Defaults to Depends( BaseContainer().get_experiment_service).
+
+    Returns:
+        GetExperimentSchema: _description_
+    """
+    return await experiment_service.get_experiment(
+        experiment_id=experiment_id
+    )
 
 
 @experiment_router.post("/create", dependencies=[Depends(AuthenticationRequired)])

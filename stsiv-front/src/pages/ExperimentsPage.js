@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import apiClient from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { MDBBtn, MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBRow, MDBCol } from 'mdb-react-ui-kit';
 
 const ExperimentsPage = () => {
@@ -47,9 +48,17 @@ const ExperimentsPage = () => {
         borderRadius: '15px', // Rounded corners for the card
     };
 
+    const buttonStyle = {
+        backgroundColor: '#3c5920', // Green background for the button
+        borderColor: '#4CAF50',
+        color: '#fff', // White text color for the button
+        maxWidth: '200px',
+        margin: '0 auto'
+    };
+
     if (isPageLoading) {
         return (
-            <div>Loading page...</div>
+            <LoadingSpinner />
         )
     } else {
         return (
@@ -91,7 +100,7 @@ const ExperimentsPage = () => {
                             {/* ... experiments map ... */}
                         </div>
                         {/* Create New Experiment Button */}
-                        <MDBBtn color="info" onClick={handleCreateNewExperiment} className="my-4">Create New Experiment</MDBBtn>
+                        <MDBBtn type="submit" style={buttonStyle} className="my-4">Create New Experiment</MDBBtn>
                     </MDBCol>
                 </MDBRow>
             </div>

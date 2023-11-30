@@ -40,6 +40,25 @@ class ExperimentService:
                                    description=new_experiment.description,
                                    versions_num=new_experiment.versions_num)
 
+    async def get_experiment(
+        self,
+        experiment_id: UUID
+    ) -> GetExperimentSchema:
+        """_summary_
+
+        Args:
+            experiment_id (UUID): _description_
+
+        Returns:
+            GetExperimentSchema: _description_
+        """
+        experiment = await self.experiment_repo.async_get(
+            id_=experiment_id
+        )
+        return GetExperimentSchema.model_validate(
+            experiment, from_attributes=True
+        )
+
     async def get_user_experiments(self, user_id: UUID) -> List[GetExperimentSchema]:
         """_summary_
 

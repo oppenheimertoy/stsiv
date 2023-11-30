@@ -1,26 +1,5 @@
 import axios from 'axios';
-
-
-// Helper function to refresh the token
-const refreshAccessToken = async () => {
-  try {
-    // Send a request to the refresh endpoint with the stored refresh token
-    const response = await axios.post('/refresh', {
-      refresh_token: localStorage.getItem('refreshToken'), // Use the correct key for your stored refresh token
-    });
-    const { token, refresh_token } = response.data;
-    
-    // Store the new tokens
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('refreshToken', refresh_token);
-    
-    return token;
-  } catch (error) {
-    console.error('Error refreshing access token:', error);
-    // Handle errors, e.g., redirect to login if refresh fails
-    throw error;
-  }
-};
+import { refreshAccessToken } from './authService';
 
 // Create an Axios instance to attach the interceptor
 const apiClient = axios.create({

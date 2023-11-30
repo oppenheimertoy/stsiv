@@ -112,7 +112,7 @@ class UserService:
         Returns:
             TokenSchema: _description_
         """
-        token = TokenHelper.decode(access_token)
+        token = TokenHelper.decode_expired_token(access_token)
         refresh_token = TokenHelper.decode(refresh_token)
         if refresh_token.get("sub") != "refresh_token":
             raise UnauthorizedException("Invalid refresh token")

@@ -111,7 +111,7 @@ async def get_user(
 @user_router.post("/refresh", dependencies=[Depends(AuthenticationRequired)])
 async def refresh_token(
     tokens: TokenSchema,
-    user_service: UserService = Depends(BaseContainer().get_user_service)
+    user_service: UserService = Depends(BaseContainer().get_user_service),
 ) -> TokenSchema:
     """_summary_
 

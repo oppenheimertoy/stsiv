@@ -19,7 +19,8 @@ const refreshAccessToken = async () => {
     // This function could be called from the Axios interceptor when needed
     try {
         const response = await apiClient.post('/user/refresh', {
-            refresh_token: localStorage.getItem('refreshToken'),
+            token: localStorage.getItem('accessToken'),
+            refresh_token: localStorage.getItem('refreshToken')
         });
         const { token, refresh_token } = response.data;
         localStorage.setItem('accessToken', token);

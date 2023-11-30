@@ -32,9 +32,9 @@ from core.middleware.schemas.current_user import CurrentUser
 version_router = APIRouter()
 
 
-@version_router.get("/list", dependencies=[Depends(AuthenticationRequired)])
+@version_router.get("/{experiment_id}/list", dependencies=[Depends(AuthenticationRequired)])
 async def get_experiment_versions(
-    list_versions: ListVersionRequest,
+    experiment_id: UUID,
     current_user: CurrentUser = Depends(get_auth_user),
     version_service: VersionService = Depends(
         BaseContainer().get_version_service
@@ -49,7 +49,7 @@ async def get_experiment_versions(
     Returns:
         List[GetVersionSchema]: _description_
     """
-    return await version_service.get_experiment_versions(experiment_id=list_versions.experiment_id)
+    return await version_service.get_experiment_versions(experiment_id=experiment_id)
 
 
 @version_router.post("/create", dependencies=[Depends(AuthenticationRequired)])

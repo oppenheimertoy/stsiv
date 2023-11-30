@@ -5,8 +5,10 @@ import LoginForm from './components/LoginForm';
 import ExperimentsPage from './pages/ExperimentsPage';
 import HomePage from './pages/HomePage';
 import RegisterForm from './components/RegisterForm'; // Assuming you have this component for registration
-import { isAuthenticated } from './utils/auth'; // Utility function for authentication check
+import {isAuthenticated} from './utils/auth'
 import GlobalStyle from './GlobalStyle';
+import ProtectedRoute from './components/ProtectedRoute';
+import ExperimentDetailPage from './pages/ExperimentDetailPage';
 
 function App() {
     return (
@@ -14,9 +16,13 @@ function App() {
         <GlobalStyle />
         <Router>
             <Routes>
-                <Route path="/login" element={!isAuthenticated() ? <LoginForm /> : <Navigate to="/experiments" />} />
-                <Route path="/register" element={!isAuthenticated() ? <RegisterForm /> : <Navigate to="/experiments" />} />
-                <Route path="/experiments" element={isAuthenticated() ? <ExperimentsPage /> : <Navigate to="/login" />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/experiments" element={isAuthenticated() ? <ExperimentsPage /> : <Navigate to="/login" />} />
+                  <Route path="/experiment/:experimentId" element={<ExperimentDetailPage />} />
+                  <Route index element={isAuthenticated() ? <ExperimentsPage /> : <Navigate to="/login" />} />
+                </Route>
+                <Route path="/login" element={isAuthenticated() ? <LoginForm /> : <Navigate to="/experiments" />} />
+                <Route path="/register" element={isAuthenticated() ? <RegisterForm /> : <Navigate to="/experiments" />} />
                 <Route path="/" element={<HomePage />} />
             </Routes>
         </Router>

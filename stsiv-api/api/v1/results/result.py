@@ -46,11 +46,21 @@ async def get_test_result(
         current_user (CurrentUser, optional): _description_. Defaults to Depends( get_auth_user).
         result_service (TestResultService, optional): _description_. Defaults to Depends( BaseContainer().get_test_result_service ).
     """
-    path = await result_service.process_test_result(
+    test_result = await result_service.process_test_result(
         test_result_id=result_id
     )
-    return str(path)
+    return test_result
 
+@result_router.get("/{result_id}/getCustomPlot")
+async def get_custom_plot(
+    result_id: UUID,
+    current_user: CurrentUser = Depends(
+        get_auth_user),
+    result_service: TestResultService = Depends(
+        BaseContainer().get_test_result_service
+    )
+):
+    pass
 
 @result_router.get("/list")
 async def get_results_list(
