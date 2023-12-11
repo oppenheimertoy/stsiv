@@ -78,7 +78,8 @@ class BaseContainer:
             VersionService: _description_
         """
         return VersionService(
-            version_repo=self.version_repository
+            version_repo=self.version_repository,
+            experiment_repo=self.experiment_repository
         )
 
     def get_test_service(self) -> TestService:

@@ -73,3 +73,27 @@ class ExperimentService:
 
         return [GetExperimentSchema.model_validate(
             experiment, from_attributes=True) for experiment in user_experiments]
+
+    async def update_verion_num(
+        self,
+        experiment_id: UUID
+    ) -> GetExperimentSchema:
+        """_summary_
+
+        Args:
+            experiment_id (UUID): _description_
+
+        Returns:
+            GetExperimentSchema: _description_
+        """
+        cur_experiment = await self.experiment_repo.async_get(
+            id_=experiment_id
+        )
+        ver_num = cur_experiment.versions_num + 1
+        upd_experiment = await self.experiment_repo.async_update(
+            id_=experiment_id,
+            **{"versions_num": ver_num}
+        )
+        return GetExperimentSchema.model_validate(
+            upd_experiment, from_attributes=True
+        )

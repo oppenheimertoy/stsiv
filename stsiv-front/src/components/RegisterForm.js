@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../api/axios'; // Import your API client
 
 import {
   MDBContainer,
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBBtn,
-  MDBCheckbox,
-  MDBIcon
+  MDBBtn
 } from 'mdb-react-ui-kit';
 
 const SignUpForm = () => {
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
@@ -20,16 +19,28 @@ const SignUpForm = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    // Sign-up logic here
-  };
+    if (password !== repeatPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
-  // Replace this with the path to your actual background image
-  // const backgroundStyle = {
-  //   backgroundImage: "url('/path-to-your-background-image.jpg')",
-  //   backgroundSize: 'cover',
-  //   backgroundRepeat: 'no-repeat',
-  //   backgroundPosition: 'center center'
-  // };
+    try {
+      await apiClient.post('/user/sign-up', {
+        username,
+        email,
+        password1: password,
+        password2: repeatPassword,
+        name: username, // Assuming username as name for simplicity
+        surname: "" // If you have a surname field, you should use it here
+      });
+
+      // Redirect to login page after successful registration
+      navigate('/login');
+    } catch (error) {
+      console.error('Registration error:', error);
+      // Handle errors (e.g., show error message)
+    }
+  };
 
   const cardStyle = {
     backgroundColor: '#2A2A2A', // Dark background color for the card
@@ -52,7 +63,7 @@ const SignUpForm = () => {
 
             {/* Name Input */}
             <div className="form-outline mb-4">
-              <MDBInput label='Your Username' id='form3Example1cg' type='text' onChange={(e) => setName(e.target.value)} />
+              <MDBInput label='Your Username' id='form3Example1cg' type='text' onChange={(e) => setUsername(e.target.value)} />
             </div>
 
             {/* Email Input */}

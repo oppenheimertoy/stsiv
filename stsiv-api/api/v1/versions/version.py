@@ -13,6 +13,7 @@ from fastapi import (
 from app.services import (
     VersionService,
     TestResultService,
+    ExperimentService
 )
 from app.schemas import (
     GetVersionSchema,
@@ -52,12 +53,39 @@ async def get_experiment_versions(
     return await version_service.get_experiment_versions(experiment_id=experiment_id)
 
 
+@version_router.get("/{version_id}/info", dependencies=[Depends(AuthenticationRequired)])
+async def get_version_info(
+    version_id: UUID,
+    current_user: CurrentUser = Depends(get_auth_user),
+    version_service: VersionService = Depends(
+        BaseContainer().get_version_service
+    )
+) -> GetVersionSchema:
+    """_summary_
+
+    Args:
+        version_id (UUID): _description_
+        current_user (CurrentUser, optional): _description_. Defaults to Depends(get_auth_user).
+        version_service (VersionService, optional): _description_. Defaults to Depends( BaseContainer().get_version_service ).
+
+    Returns:
+        GetVersionSchema: _description_
+    """
+    return await version_service.get_version_info(
+        version_id=version_id
+    )
+
+
 @version_router.post("/create", dependencies=[Depends(AuthenticationRequired)])
 async def create_experiment(
     version_data: CreateVersionRequest,
     current_user: CurrentUser = Depends(get_auth_user),
     version_service: VersionService = Depends(
-        BaseContainer().get_version_service)
+        BaseContainer().get_version_service
+    ),
+    experiment_service: ExperimentService = Depends(
+        BaseContainer().get_experiment_service
+    )
 ) -> GetVersionSchema:
     """_summary_
 
@@ -68,9 +96,13 @@ async def create_experiment(
     Returns:
         GetExperimentSchema: _description_
     """
-    return await version_service.create_version(experiment_id=version_data.experiment_id,
-                                                name=version_data.name,
-                                                description=version_data.description)
+    new_version = await version_service.create_version(experiment_id=version_data.experiment_id,
+                                                       name=version_data.name,
+                                                       description=version_data.description)
+    await experiment_service.update_verion_num(
+        experiment_id=version_data.experiment_id
+    )
+    return new_version
 
 
 @version_router.post("/{version_id}/upload")

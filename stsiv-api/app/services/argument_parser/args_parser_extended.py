@@ -6,7 +6,8 @@ from uuid import UUID
 
 
 class STSConfig:
-    """_summary_
+    """
+    Config class for sts command generation
     """
 
     def __init__(self, version_id: UUID, json_config=None):

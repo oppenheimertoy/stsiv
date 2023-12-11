@@ -10,7 +10,7 @@ from pathlib import Path
 import aiofiles
 
 from app.dto import VersionDataDTO
-from app.repositories import VersionRepository
+from app.repositories import VersionRepository, ExperimentRepository
 from app.schemas import (
     GetVersionSchema,
     VersionParamsRequest
@@ -23,8 +23,14 @@ class VersionService:
     """_summary_
     """
 
-    def __init__(self, version_repo: VersionRepository):
+    def __init__(
+        self,
+        version_repo: VersionRepository,
+        experiment_repo: ExperimentRepository
+    ):
+        self.experiment_repo: ExperimentRepository = experiment_repo
         self.version_repo: VersionRepository = version_repo
+
         self.base_result_dir = Path(
             __file__).resolve().parent.parent.parent / 'result'
 
@@ -45,6 +51,24 @@ class VersionService:
         return await self.version_repo.create_version(VersionDataDTO(experiment_id=experiment_id,
                                                                      name=name,
                                                                      description=description))
+
+    async def get_version_info(
+        self,
+        version_id: UUID
+    ) -> GetVersionSchema:
+        """_summary_
+
+        Args:
+            version_id (UUID): _description_
+
+        Returns:
+            GetVersionSchema: _description_
+        """
+        version = await self.version_repo.async_get(
+            id_=version_id
+        )
+        return GetVersionSchema.model_validate(
+            version, from_attributes=True)
 
     async def get_experiment_versions(self, experiment_id: UUID) -> List[GetVersionSchema]:
         """_summary_

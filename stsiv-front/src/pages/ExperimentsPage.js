@@ -3,11 +3,13 @@ import apiClient from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { MDBBtn, MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBRow, MDBCol } from 'mdb-react-ui-kit';
+import CreateExperimentModal from '../components/CreateExperimentModal';
 
 const ExperimentsPage = () => {
     const [experiments, setExperiments] = useState([]);
     const [userData, setUserData] = useState(null);
     const [isPageLoading, setIsPageLoading] =  useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,7 +33,22 @@ const ExperimentsPage = () => {
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        navigate('/'); // Redirect to the landing page
+        navigate('/login'); // Redirect to the landing page
+    };
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
+    const handleCreateExperiment = async (name, description) => {
+        try {
+            const response = await apiClient.post('/experiment/create', { name, description });
+            const newExperimentId = response.data.id;
+            navigate(`/experiment/${newExperimentId}`);
+        } catch (error) {
+            console.error('Error creating experiment:', error);
+            // Handle errors (e.g., show error message)
+        }
     };
 
     const handleCreateNewExperiment = () => {
@@ -53,7 +70,8 @@ const ExperimentsPage = () => {
         borderColor: '#4CAF50',
         color: '#fff', // White text color for the button
         maxWidth: '200px',
-        margin: '0 auto'
+        margin: '0 auto',
+        height: 38
     };
 
     if (isPageLoading) {
@@ -99,8 +117,8 @@ const ExperimentsPage = () => {
                                 )}
                             {/* ... experiments map ... */}
                         </div>
-                        {/* Create New Experiment Button */}
-                        <MDBBtn type="submit" style={buttonStyle} className="my-4">Create New Experiment</MDBBtn>
+                        <CreateExperimentModal isOpen={isModalOpen} toggle={toggleModal} onCreate={handleCreateExperiment} />
+                        <MDBBtn type="button" style={buttonStyle} className="my-4" onClick={toggleModal}>Create New Experiment</MDBBtn>
                     </MDBCol>
                 </MDBRow>
             </div>

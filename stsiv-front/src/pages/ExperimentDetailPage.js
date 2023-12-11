@@ -48,7 +48,6 @@ const ExperimentDetailPage = () => {
         backgroundColor: '#2A2A2A', // Dark background color for the card
         color: '#fff', // White text color
         borderRadius: '15px', // Rounded corners for the card
-        margin: '10px' // Margin for spacing
     };
 
     if (isPageLoading) {
@@ -78,16 +77,19 @@ const ExperimentDetailPage = () => {
                 {/* Versions List Section */}
                 <MDBCol md="8">
                     <h2 className="text-white">Versions</h2>
-                    <div className="versions-list" style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
-                        {versions.length > 0 ? versions.map(version => (
-                            <MDBCard key={version.id} style={cardStyle} onClick={() => handleVersionClick(version.id)}>
-                                <MDBCardBody>
-                                    <MDBCardTitle>{version.name}</MDBCardTitle>
-                                    <MDBCardText>Description: {version.description}</MDBCardText>
-                                    {/* Add more version details here */}
-                                </MDBCardBody>
-                            </MDBCard>
-                        )) : (
+                    <div className="versions-list">
+                        {versions.length > 0 ? (
+                            <div className="d-flex flex-column">
+                                {versions.map((version, index) => (
+                                    <MDBCard key={version.id} style={cardStyle} onClick={() => handleVersionClick(version.id)} className={index !== 0 ? "mt-3" : ""}>
+                                        <MDBCardBody>
+                                            <MDBCardTitle>{version.name}</MDBCardTitle>
+                                            <MDBCardText>Description: {version.description}</MDBCardText>
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                ))}
+                            </div>
+                        ) : (
                             <p className="text-white">No versions found.</p>
                         )}
                     </div>
