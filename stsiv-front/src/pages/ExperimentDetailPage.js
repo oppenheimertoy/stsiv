@@ -4,12 +4,14 @@ import apiClient from '../api/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBRow, MDBCol, MDBBtn } from 'mdb-react-ui-kit';
+import CreateVersionModal from '../components/CreateVersionModal';
 
 const ExperimentDetailPage = () => {
     const [experiment, setExperiment] = useState(null);
     const [versions, setVersions] = useState([]);
     const { experimentId } = useParams(); // This assumes you're using URL params
     const [isPageLoading, setIsPageLoading] =  useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,18 +38,38 @@ const ExperimentDetailPage = () => {
         navigate(`/experiment/${experimentId}/version/${versionId}`);
     };
 
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
     const handleGoBack = () => {
         navigate(-1); // Go back to the previous page
     };
 
-    const handleCreateVersion = () => {
-        navigate(`/experiment/${experimentId}/create-version`); // Adjust the route as necessary
+    const handleCreateVersion = async (name, description) => {
+        try {
+            const response = await apiClient.post('/version/create', { name, description, experiment_id: experimentId });
+            const newVersionId = response.data.id;
+            navigate(`/experiment/${experimentId}/version/${newVersionId}`);
+        } catch (error) {
+            console.error('Error creating version:', error);
+            // Handle errors (e.g., show error message)
+        }
     };
 
     const cardStyle = {
         backgroundColor: '#2A2A2A', // Dark background color for the card
         color: '#fff', // White text color
         borderRadius: '15px', // Rounded corners for the card
+    };
+
+    const buttonStyle = {
+        backgroundColor: '#3c5920', // Green background for the button
+        borderColor: '#4CAF50',
+        color: '#fff', // White text color for the button
+        maxWidth: '200px',
+        margin: '0 auto',
+        height: 38
     };
 
     if (isPageLoading) {
@@ -93,6 +115,8 @@ const ExperimentDetailPage = () => {
                             <p className="text-white">No versions found.</p>
                         )}
                     </div>
+                    <MDBBtn type="button" style={buttonStyle} className="my-4" onClick={toggleModal}>Create New Version</MDBBtn>
+                    <CreateVersionModal isOpen={isModalOpen} toggle={toggleModal} onCreate={handleCreateVersion} />
                 </MDBCol>
             </MDBRow>
         </div>
