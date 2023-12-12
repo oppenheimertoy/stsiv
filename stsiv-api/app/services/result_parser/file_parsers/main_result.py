@@ -31,8 +31,3 @@ def parse_overall_results(file_path):
         "Test_Results": test_results
     }
 
-
-# if __name__ == "__main__":
-#     parsed_results = parse_overall_results(
-#         '/home/oppy/Projects/random/sts/results/aes_cbc/result.txt')
-#     print(parsed_results)

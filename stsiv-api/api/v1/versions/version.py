@@ -182,4 +182,7 @@ async def run_tests(
     Returns:
         str: _description_
     """
-    return {"command": await version_service.calculate_version(version_id=version_id)}
+    return {
+        "command": await version_service.calculate_version(version_id=version_id),
+        "result": 
+        }

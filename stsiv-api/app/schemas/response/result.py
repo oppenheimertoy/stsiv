@@ -12,6 +12,7 @@ class GetResultSchema(BaseModel):
     id: UUID = Field(UUID)
     version_id: UUID = Field(UUID)
     test_id: UUID = Field(UUID)
+    name: str = Field(str)
 
     class Config:
         from_attributes = True

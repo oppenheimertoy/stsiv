@@ -6,12 +6,14 @@ from contextlib import AbstractContextManager
 from typing import (
     Callable,
     List,
-    Awaitable
+    Awaitable,
+    Tuple,
+    AnyStr
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.repository.base_repo import AsyncBaseRepository
-from app.models import TestResult
+from app.models import TestResult, Test
 from app.dto import TestResultDataDTO
 
 
@@ -48,7 +50,7 @@ class TestResultRepository(AsyncBaseRepository):
     async def get_results_by_version(
         self,
         version_id: UUID
-    ) -> List[Awaitable[TestResult]]:
+    ) -> List[Awaitable[Tuple[TestResult, AnyStr]]]:
         """_summary_
 
         Args:
@@ -59,6 +61,11 @@ class TestResultRepository(AsyncBaseRepository):
         """
         async with self.session_factory() as session:
             result = await session.execute(
-                select(TestResult).where(TestResult.version_id == version_id)
+                select(
+                    TestResult,
+                    Test.name
+                )
+                .join(Test, TestResult.tests_parent_rel)
+                .where(TestResult.version_id == version_id)
             )
-            return result.scalars().all()
+            return result.all()

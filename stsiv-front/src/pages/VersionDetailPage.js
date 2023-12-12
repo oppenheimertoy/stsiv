@@ -8,6 +8,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import LoadingSpinner from '../components/LoadingSpinner';
+import CircularProgress from '@mui/material/CircularProgress';
+import Button from '@mui/material/Button';
 
 const VersionDetailPage = () => {
     const [versionDetails, setVersionDetails] = useState(null);
@@ -15,12 +18,27 @@ const VersionDetailPage = () => {
     const [selectedParam, setSelectedParam] = useState('');
     const { versionId } = useParams();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [parsedParameters, setParsedParameters] = useState(null);
+    const [isPageLoading, setIsPageLoading] = useState(false); // Initially set to true
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isTestRunning, setIsTestRunning] = useState(false);
 
     useEffect(() => {
         const fetchVersionDetails = async () => {
             try {
+                setIsPageLoading(true);
                 const versionInfoResponse = await apiClient.get(`/version/${versionId}/info`);
-                setVersionDetails(versionInfoResponse.data);
+                let versionData = versionInfoResponse.data;
+            
+                // Check if 'params' is a string and parse it if so
+                if (typeof versionData.params === 'string') {
+                    versionData = {
+                        ...versionData,
+                        params: convertEscapedJsonString(versionData.params),
+                    };
+                }
+                setVersionDetails(versionData);
+                setIsPageLoading(false);
 
                 const resultsResponse = await apiClient.get(`/result/${versionId}/list`);
                 setResults(resultsResponse.data);
@@ -32,6 +50,42 @@ const VersionDetailPage = () => {
 
         fetchVersionDetails();
     }, [versionId]);
+
+    useEffect(() => {
+    if (versionDetails && versionDetails.params) {
+        const parsed = parseParams(versionDetails.params);
+        setParsedParameters(parsed);
+    }
+}, [versionDetails]);
+
+    const handleStartTest = async () => {
+        setIsTestRunning(true); // Start the test and show spinner
+
+        try {
+            await apiClient.post(`/version/${versionId}/run`);
+            // Handle successful test initiation here, e.g., show a message
+        } catch (error) {
+            // Handle error here, e.g., show an error message
+            console.error('Error starting the test:', error);
+        }
+
+        setIsTestRunning(false); // Test has started, stop showing spinner
+    };
+
+    const parseParams = (paramsString) => {
+        try {
+            // Replace escaped backslashes followed by quotes
+            const unescapedString = paramsString.replace(/\\\\"/g, '"');
+            // Parse the unescaped string as JSON
+            const parsedParams = JSON.parse(unescapedString);
+            // Check the result of parsing
+            console.log('Parsed Params:', parsedParams);
+            return parsedParams;
+        } catch (e) {
+            console.error("Error parsing params:", e);
+            return {}; // Return an empty object in case of error
+        }
+    };
 
     const cardStyle = {
         backgroundColor: '#2A2A2A', // Dark background color for the card
@@ -48,6 +102,14 @@ const VersionDetailPage = () => {
         height: 38
     };
 
+    const convertEscapedJsonString = (escapedJsonString) => {
+        try {
+            return JSON.parse(escapedJsonString);
+        } catch (error) {
+            console.error('Error parsing escaped JSON string:', error);
+            return null; // Return null or an appropriate error handling
+        }
+    };
 
     const renderParameterValues = (parameters) => {
         return Object.entries(parameters).map(([key, value]) => {
@@ -59,15 +121,18 @@ const VersionDetailPage = () => {
     };
 
     const handleUpdateParameters = async (updatedParams, file) => {
+        setIsSubmitting(true);
         try {
-          await apiClient.put(`/api/v1/version/${versionId}/params`, updatedParams);
+          await apiClient.put(`/version/${versionId}/params`, updatedParams);
           if (file) {
             const formData = new FormData();
             formData.append('file', file);
-            await apiClient.post(`/api/v1/version/${versionId}/upload`, formData);
+            await apiClient.post(`/version/${versionId}/upload`, formData);
+            setIsSubmitting(false);
           }
         } catch (error) {
           console.error('Error updating version:', error);
+          setIsSubmitting(false);
         }
       };
 
@@ -78,6 +143,13 @@ const VersionDetailPage = () => {
     const formatParameters = (params) => {
         return JSON.stringify(params, null, 2); // Pretty print the parameters
     };
+
+
+    if (isPageLoading || isSubmitting) {
+        return (
+            <LoadingSpinner />
+        )
+    } else {
 
     return (
         <div className="container mt-4">
@@ -141,7 +213,7 @@ const VersionDetailPage = () => {
                             <MDBCard key={result.id} style={cardStyle}>
                                 <MDBCardBody>
                                     {/* Display result details here */}
-                                    <MDBCardText>Result ID: {result.id}</MDBCardText>
+                                    <MDBCardText>{result.name}</MDBCardText>
                                 </MDBCardBody>
                             </MDBCard>
                         )) : (
@@ -153,11 +225,20 @@ const VersionDetailPage = () => {
                             toggle={() => setIsUpdateModalOpen(false)}
                             onUpdate={handleUpdateParameters}
                         />
+                        <Button
+                            variant="contained"
+                            onClick={handleStartTest}
+                            disabled={isTestRunning}
+                            startIcon={isTestRunning && <CircularProgress size={20} />}
+                        >
+                            {isTestRunning ? 'Starting Test...' : 'Start Test'}
+                        </Button>
                     </div>
                 </MDBCol>
             </MDBRow>
         </div>
     );
+   }
 };
 
 export default VersionDetailPage;

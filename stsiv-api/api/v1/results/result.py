@@ -62,9 +62,9 @@ async def get_custom_plot(
 ):
     pass
 
-@result_router.get("/list")
+@result_router.get("/{version_id}/list")
 async def get_results_list(
-    list_res_data: ListResultsRequest,
+    version_id: UUID,
     current_user: CurrentUser = Depends(
         get_auth_user),
     result_service: TestResultService = Depends(
@@ -85,8 +85,12 @@ async def get_results_list(
         List[GetResultSchema]: _description_
     """
     results = await result_service.list_results(
-        list_res_data.version_id
+        version_id
     )
-    return [GetResultSchema.model_validate(
-            result, from_attributes=True) for result in results
+    return [GetResultSchema(
+        id=result[0].id,
+        version_id=result[0].version_id,
+        test_id=result[0].test_id,
+        name=result[1]
+        ) for result in results
             ]

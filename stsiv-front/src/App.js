@@ -10,6 +10,7 @@ import GlobalStyle from './GlobalStyle';
 import ProtectedRoute from './components/ProtectedRoute';
 import ExperimentDetailPage from './pages/ExperimentDetailPage';
 import VersionDetailPage from './pages/VersionDetailPage';
+import TestResultPage from './pages/TestResultPage';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                   <Route path="/experiment/:experimentId" element={<ExperimentDetailPage />} />
                   <Route path="/experiment/:experimentId/version/:versionId" element={<VersionDetailPage />} />
                   <Route index element={isAuthenticated() ? <ExperimentsPage /> : <Navigate to="/login" />} />
+                  <Route path="/result/:resultId" element={<TestResultPage />} />
                 </Route>
                 <Route path="/login" element={isAuthenticated() ? <LoginForm /> : <Navigate to="/experiments" />} />
                 <Route path="/register" element={isAuthenticated() ? <RegisterForm /> : <Navigate to="/experiments" />} />

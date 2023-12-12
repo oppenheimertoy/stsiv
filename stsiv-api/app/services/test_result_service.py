@@ -3,7 +3,9 @@
 from typing import (
     List,
     Awaitable,
-    Dict
+    Dict,
+    Tuple,
+    AnyStr
 )
 from uuid import UUID
 from pathlib import Path
@@ -85,7 +87,7 @@ class TestResultService:
     async def list_results(
         self,
         version_id: UUID
-    ) -> List[Awaitable[TestResult]]:
+    ) -> List[Awaitable[Tuple[TestResult, AnyStr]]]:
         """_summary_
 
         Args:
@@ -118,7 +120,6 @@ class TestResultService:
         # Construct file path for results and stats
         result_folder_path = self.file_storage_base_path / \
             str(test_result.version_id) / 'result' / test_type.name
-        print(result_folder_path)
 
         results_file_path = result_folder_path / 'results.txt'
         stats_file_path = result_folder_path / 'stats.txt'
