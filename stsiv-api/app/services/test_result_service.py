@@ -100,6 +100,46 @@ class TestResultService:
             version_id
         )
 
+    async def get_pvalue_plot_dir(
+        self,
+        result_id: UUID
+    ):
+        """_summary_
+
+        Args:
+            test_id (UUID): _description_
+        """
+        test_res = await self.test_result_repo.get_result_by_id(
+            result_id=result_id
+        )
+        version_id = test_res[0][0].version_id
+        test_name = test_res[0][1]
+
+        result_pval_path = self.file_storage_base_path / \
+            str(version_id) / 'result' / str(test_name) / 'p_val.png'
+
+        return result_pval_path
+    
+    async def get_custom_plot_dir(
+        self,
+        result_id: UUID
+    ):
+        """_summary_
+
+        Args:
+            test_id (UUID): _description_
+        """
+        test_res = await self.test_result_repo.get_result_by_id(
+            result_id=result_id
+        )
+        version_id = test_res[0][0].version_id
+        test_name = test_res[0][1]
+
+        result_pval_path = self.file_storage_base_path / \
+            str(version_id) / 'result' / str(test_name) / 'custom_plot.png'
+
+        return result_pval_path
+
     async def process_test_result(
         self,
         test_result_id: UUID
@@ -383,36 +423,26 @@ class TestResultService:
         plot_path = result_folder / "custom_plot.png"
 
         # Extracting data for the plot
-        pi_values = []
-        criteria_values = []
-        pi_estimator_needs = []
-        p_values = []
+        v_n_obs = [result['V_n_obs'] for result in parsed_results]
+        calculated_statistic = [(result['V_n_obs'] - 2 * 1000 * result['P_i'] * (1 - result['P_i'])) / (2 * (1000**0.5) * result['P_i'] * (1 - result['P_i'])) for result in parsed_results]
+        p_values = [result['p_value'] for result in parsed_results]
 
-        for result in parsed_results:
-            pi_values.append(result.get('Pi', 0))
-            criteria_values.append(result.get('Criteria', 0))
-            pi_estimator_needs.append(result.get('Pi_Estimator_Needs', 0))
-            p_values.append(result.get('p_value', 0))
+        # Creating scatter plots
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
-        # Creating the plot
-        fig, ax1 = plt.subplots()
+        # V_n_obs vs. p-value
+        ax1.scatter(v_n_obs, p_values)
+        ax1.set_title('V_n_obs vs. P-Value')
+        ax1.set_xlabel('V_n_obs')
+        ax1.set_ylabel('P-Value')
 
-        # Line plot for Pi, Criteria, and Pi Estimator Needs
-        ax1.plot(pi_values, label='Pi')
-        ax1.plot(criteria_values, label='Criteria')
-        ax1.plot(pi_estimator_needs, label='Pi Estimator Needs')
-        ax1.set_xlabel('Test Instance')
-        ax1.set_ylabel('Values')
-        ax1.set_title('Runs Test Results')
-        ax1.legend(loc='upper left')
+        # Calculated Statistic vs. p-value
+        ax2.scatter(calculated_statistic, p_values)
+        ax2.set_title('Calculated Statistic vs. P-Value')
+        ax2.set_xlabel('Calculated Statistic')
+        ax2.set_ylabel('P-Value')
 
-        # Line plot for p-values on a secondary y-axis
-        ax2 = ax1.twinx()
-        ax2.plot(p_values, 'r--', label='P-value')
-        ax2.set_ylabel('P-value')
-        ax2.legend(loc='upper right')
-
-        # Saving the plot
+        plt.tight_layout()
         plt.savefig(plot_path)
         plt.close()
 
@@ -802,46 +832,20 @@ class TestResultService:
             Path: The path to the saved plot.
         """
         plot_path = result_folder / "custom_plot.png"
-        # Extracting data for plotting
-        test_runs = range(len(parsed_results))
-        nth_partial_sums = [result['Nth_partial_sum']
-                            for result in parsed_results]
-        sn_over_n = [result['Sn_n'] for result in parsed_results]
-        p_values = [result['p_value'] for result in parsed_results]
+        # Extracting nth_partial_sums for plotting
+        nth_partial_sums = [result['Nth_partial_sum'] for result in parsed_results]
 
-        # Creating the plot
-        fig, ax1 = plt.subplots()
+        # Divide the nth_partial_sums into intervals
+        interval_size = max(1, len(nth_partial_sums) // 20)
+        box_data = [nth_partial_sums[i:i + interval_size] for i in range(0, len(nth_partial_sums), interval_size)]
 
-        # Plotting nth partial sums and sn/n
-        color = 'tab:blue'
-        ax1.set_xlabel('Test Run')
-        ax1.set_ylabel('nth Partial Sum', color=color)
-        ax1.plot(test_runs, nth_partial_sums,
-                 color=color, label='nth Partial Sum')
-        ax1.tick_params(axis='y', labelcolor=color)
+        # Creating the box plot
+        fig, ax = plt.subplots()
+        ax.boxplot(box_data)
 
-        ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-        color = 'tab:green'
-        # we already handled the x-label with ax1
-        ax2.set_ylabel('S_n/n', color=color)
-        ax2.plot(test_runs, sn_over_n, color=color, label='S_n/n')
-        ax2.tick_params(axis='y', labelcolor=color)
-
-        # Plotting p-values
-        ax3 = ax1.twinx()
-        ax3.spines['right'].set_position(('outward', 60))
-        ax3.set_ylabel('P-Value', color='tab:red')
-        ax3.plot(test_runs, p_values, color='tab:red',
-                 linestyle='dashed', label='P-Value')
-        ax3.tick_params(axis='y', labelcolor='tab:red')
-        ax3.axhline(y=0.01, color='r', linestyle='dotted')
-
-        # Title and legend
-        plt.title('Frequency Monobit Test Results')
-        fig.tight_layout()  # to fit labels
-        ax1.legend(loc='upper left')
-        ax2.legend(loc='lower left')
-        ax3.legend(loc='upper right')
+        ax.set_xlabel('Interval')
+        ax.set_ylabel('Nth Partial Sums')
+        plt.title('Box Plot of Frequency Monobit Test Results')
 
         plt.savefig(plot_path)
         plt.close()
@@ -904,27 +908,21 @@ class TestResultService:
         """
         plot_path = result_folder / "custom_plot.png"
 
-        # Assuming multiple results can be parsed, we create a bar chart
+        # Extracting Maximum Partial Sums for plotting
         max_sums = [result['Maximum_partial_sum'] for result in parsed_results]
-        p_values = [result['p_value'] for result in parsed_results]
 
-        fig, ax1 = plt.subplots()
+        # Divide the max_sums into intervals
+        interval_size = max(1, len(max_sums) // 15)
+        box_data = [max_sums[i:i + interval_size] for i in range(0, len(max_sums), interval_size)]
 
-        color = 'tab:blue'
-        ax1.set_xlabel('Test Run')
-        ax1.set_ylabel('Maximum Partial Sum', color=color)
-        ax1.bar(range(len(max_sums)), max_sums, color=color)
-        ax1.tick_params(axis='y', labelcolor=color)
+        # Creating the box plot
+        fig, ax = plt.subplots()
+        ax.boxplot(box_data)
 
-        ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-        color = 'tab:red'
-        # we already handled the x-label with ax1
-        ax2.set_ylabel('P-Value', color=color)
-        ax2.plot(range(len(p_values)), p_values, color=color)
-        ax2.tick_params(axis='y', labelcolor=color)
+        ax.set_xlabel('Interval')
+        ax.set_ylabel('Maximum Partial Sum')
+        plt.title('Box Plot of Cumulative Sum Test Results')
 
-        fig.tight_layout()  # otherwise the right y-label is slightly clipped
-        plt.title('Cumulative Sums Test: Maximum Partial Sums and P-Values')
         plt.savefig(plot_path)
         plt.close()
 
@@ -981,38 +979,24 @@ class TestResultService:
         parsed_results: List[Dict],
         result_folder
     ):
-        # Number of test runs
-        n = len(parsed_results)
 
         # Extracting the relevant metrics
         chi_squared = [result['Chi_squared'] for result in parsed_results]
-        num_substrings = [result['Number_of_substrings']
-                          for result in parsed_results]
-        block_length = [result['Block_length'] for result in parsed_results]
+        p_values = [result['p_value'] for result in parsed_results]
 
-        # Plotting Chi-squared values
+        # Plotting the correlation between Chi-squared values and p-values
         plt.figure(figsize=(10, 6))
-        plt.subplot(2, 1, 1)
-        plt.bar(range(n), chi_squared, color='blue')
-        plt.title('Chi-Squared Values Over Test Runs')
-        plt.xlabel('Test Run')
-        plt.ylabel('Chi-Squared')
+        plt.scatter(chi_squared, p_values, color='blue')
+        plt.title('Correlation between Chi-Squared Values and P-Values')
+        plt.xlabel('Chi-Squared')
+        plt.ylabel('P-Value')
 
-        # Plotting Block Length and Number of Substrings
-        plt.subplot(2, 1, 2)
-        plt.plot(range(n), block_length, '-o', label='Block Length')
-        plt.plot(range(n), num_substrings, '-o', label='Number of Substrings')
-        plt.title('Block Length and Number of Substrings Over Test Runs')
-        plt.xlabel('Test Run')
-        plt.ylabel('Value')
-        plt.legend()
-
-        # Save plot for Chi-squared and Block Length/Number of Substrings
-        plot_path_1 = result_folder / "custom_plot.png"
-        plt.savefig(plot_path_1)
+        # Save plot for the correlation between Chi-squared and P-Values
+        plot_path = result_folder / "custom_plot.png"
+        plt.savefig(plot_path)
         plt.close()
 
-        return plot_path_1
+        return plot_path
 
     def _plot_p_values(
         self,

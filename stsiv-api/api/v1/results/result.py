@@ -10,6 +10,8 @@ from fastapi import (
     File
 )
 
+from fastapi.responses import FileResponse
+
 from app.services import (
     VersionService,
     TestResultService,
@@ -51,7 +53,8 @@ async def get_test_result(
     )
     return test_result
 
-@result_router.get("/{result_id}/getCustomPlot")
+
+@result_router.get("/{result_id}/getCustom")
 async def get_custom_plot(
     result_id: UUID,
     current_user: CurrentUser = Depends(
@@ -59,8 +62,43 @@ async def get_custom_plot(
     result_service: TestResultService = Depends(
         BaseContainer().get_test_result_service
     )
-):
-    pass
+) -> FileResponse:
+    """_summary_
+
+    Args:
+        result_id (UUID): _description_
+        current_user (CurrentUser, optional): _description_. Defaults to Depends( get_auth_user).
+        result_service (TestResultService, optional): _description_. Defaults to Depends( BaseContainer().get_test_result_service ).
+
+    Returns:
+        FileResponse: _description_
+    """
+    pval_path = await result_service.get_custom_plot_dir(result_id)
+    return FileResponse(pval_path)
+
+
+@result_router.get("/{result_id}/getPval")
+async def get_pval_plot(
+    result_id: UUID,
+    current_user: CurrentUser = Depends(
+        get_auth_user),
+    result_service: TestResultService = Depends(
+        BaseContainer().get_test_result_service
+    )
+) -> FileResponse:
+    """_summary_
+
+    Args:
+        result_id (UUID): _description_
+        current_user (CurrentUser, optional): _description_. Defaults to Depends( get_auth_user).
+        result_service (TestResultService, optional): _description_. Defaults to Depends( BaseContainer().get_test_result_service ).
+
+    Returns:
+        FileResponse: _description_
+    """
+    pval_path = await result_service.get_pvalue_plot_dir(result_id)
+    return FileResponse(pval_path)
+
 
 @result_router.get("/{version_id}/list")
 async def get_results_list(
@@ -92,5 +130,5 @@ async def get_results_list(
         version_id=result[0].version_id,
         test_id=result[0].test_id,
         name=result[1]
-        ) for result in results
-            ]
+    ) for result in results
+    ]

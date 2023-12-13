@@ -18,6 +18,7 @@ from app.schemas import (
 from app.services.argument_parser.args_parser_extended import STSConfig
 from app.services.subprocess_service.subprocess_controller import STSProcessController
 
+from app.services.result_parser.file_parsers.main_result import parse_overall_results
 
 class VersionService:
     """_summary_
@@ -120,6 +121,24 @@ class VersionService:
         """
         params_json = new_params.model_dump_json()
         return await self.version_repo.async_update(version_id, params=params_json)
+    
+    async def get_version_results(
+        self,
+        version_id: UUID
+    ) -> dict:
+        """_summary_
+
+        Args:
+            version_id (UUID): _description_
+
+        Returns:
+            dict: _description_
+        """
+        version_dir = self.base_result_dir / str(version_id)
+        result_dir = version_dir / 'result' / 'result.txt'
+        
+        return parse_overall_results(result_dir)
+        
 
     async def upload_version_file(self, version_id: UUID,
                                   file: UploadFile,

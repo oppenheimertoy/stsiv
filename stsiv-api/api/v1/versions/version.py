@@ -184,5 +184,5 @@ async def run_tests(
     """
     return {
         "command": await version_service.calculate_version(version_id=version_id),
-        "result": 
-        }
+        "result": await version_service.get_version_results(version_id=version_id)
+    }

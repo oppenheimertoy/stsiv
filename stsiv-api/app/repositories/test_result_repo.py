@@ -69,3 +69,26 @@ class TestResultRepository(AsyncBaseRepository):
                 .where(TestResult.version_id == version_id)
             )
             return result.all()
+
+    async def get_result_by_id(
+        self,
+        result_id: UUID
+    ) -> Awaitable[Tuple[TestResult, AnyStr]]:
+        """_summary_
+
+        Args:
+            result_id (UUID): _description_
+
+        Returns:
+            Awaitable[Tuple[TestResult, AnyStr]]: _description_
+        """
+        async with self.session_factory() as session:
+            result = await session.execute(
+                select(
+                    TestResult,
+                    Test.name
+                )
+                .join(Test, TestResult.tests_parent_rel)
+                .where(TestResult.id == result_id)
+            )
+            return result.all()
