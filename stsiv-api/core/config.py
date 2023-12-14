@@ -141,7 +141,7 @@ class DevelopmentJWTConfig(AppConfig):
     Args:
         AppConfig (BaseSettings): Base class of application config
     """
-    JWT_LIFETIME: int = 3600
+    JWT_LIFETIME: int = 7200
     JWT_SECRET_KEY: str = "c65aba774aacb2bcffeb464b14a9401fab0c1d63ef94c5fe663690f45a35fd8e"
     JWT_ALGORITHM: str = "HS256"
 

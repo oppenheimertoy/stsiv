@@ -300,47 +300,19 @@ class TestResultService:
         plot_path = result_folder / "custom_plot.png"
 
         # Extracting data for the plot
-        sum_values = []
-        sigma_values = []
-        variance_values = []
-        exp_values = []
-        phi_values = []
-        discarded_values = []
-        p_values = []
-
-        for result in parsed_results:
-            sum_values.append(result.get('Sum', 0))
-            sigma_values.append(result.get('Sigma', 0))
-            variance_values.append(result.get('Variance', 0))
-            exp_values.append(result.get('Exp_value', 0))
-            phi_values.append(result.get('Phi', 0))
-            discarded_values.append(result.get('Discarded', 0))
-            p_values.append(result.get('p_value', 0))
+        sum_values = [result.get('Sum', 0) for result in parsed_results]
+        p_values = [result.get('p_value', 0) for result in parsed_results]
 
         # Creating the plot
-        fig, ax1 = plt.subplots()
+        fig, ax = plt.subplots()
 
-        # Line plot for sum, sigma, variance, expected value, phi, and discarded values
-        ax1.plot(sum_values, label='Sum')
-        ax1.plot(sigma_values, label='Sigma')
-        ax1.plot(variance_values, label='Variance')
-        ax1.plot(exp_values, label='Expected Value')
-        ax1.plot(phi_values, label='Phi')
-        ax1.plot(discarded_values, label='Discarded', linestyle='--')
-        ax1.set_xlabel('Test Instance')
-        ax1.set_ylabel('Values')
-        ax1.set_title('Universal Statistical Test Results')
-        ax1.legend(loc='upper left')
+        # Scatter plot for Sum vs p-values
+        ax.scatter(sum_values, p_values, color='blue', label='Sum vs P-value')
+        ax.set_xlabel('Sum')
+        ax.set_ylabel('P-value')
+        ax.set_title('Variance Between Sum and P-values for Universal Statistical Test')
+        ax.legend(loc='upper right')
 
-        # Bar plot for p-values on a secondary y-axis
-        ax2 = ax1.twinx()
-        ind = np.arange(len(p_values))  # the x locations for the groups
-        width = 0.35  # the width of the bars
-        ax2.bar(ind, p_values, width, label='P-value', color='lightgreen')
-        ax2.set_ylabel('P-value')
-        ax2.legend(loc='upper right')
-
-        # Saving the plot
         plt.savefig(plot_path)
         plt.close()
 
@@ -461,56 +433,48 @@ class TestResultService:
         """
         plot_path = result_folder / "custom_plot.png"
 
-        ranks = ['P_32', 'P_31', 'P_30']
-        average_probabilities = [0.0, 0.0, 0.0]
-        average_frequencies = [0.0, 0.0, 0.0]
-        total_chi_squared = 0.0
-        total_p_values = 0.0
+        f_32_values = []
+        f_31_values = []
+        f_30_values = []
+        p_values = []
 
         for result in parsed_results:
-            probabilities = result.get('Probabilities', [0, 0, 0])
             frequencies = result.get('Frequencies', [0, 0, 0])
-            average_probabilities = [sum(x) for x in zip(
-                average_probabilities, probabilities)]
-            average_frequencies = [sum(x) for x in zip(
-                average_frequencies, frequencies)]
-            total_chi_squared += result.get('Chi_squared', 0)
-            total_p_values += float(result.get('p_value', 0))
+            p_value = float(result.get('p_value', 0))
+            p_values.append(p_value)
+            f_32_values.append(frequencies[0])  # Assuming the order is F_32, F_31, F_30
+            f_31_values.append(frequencies[1])
+            f_30_values.append(frequencies[2])
 
-        num_tests = len(parsed_results)
-        average_probabilities = [p / num_tests for p in average_probabilities]
-        average_frequencies = [f / num_tests for f in average_frequencies]
-        average_chi_squared = total_chi_squared / num_tests
-        average_p_value = total_p_values / num_tests
+        # Creating the subplots
+        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 15))
 
-        # Creating the plot
-        fig, ax1 = plt.subplots()
+        # F_32 vs p-values
+        ax1.scatter(p_values, f_32_values, color='blue', label='F_32')
+        ax1.set_xlabel('P-Value')
+        ax1.set_ylabel('F_32 Value')
+        ax1.set_title('F_32 Values vs. P-Values')
+        ax1.legend()
 
-        ind = np.arange(len(ranks))  # the x locations for the groups
-        width = 0.35  # the width of the bars
+        # F_31 vs p-values
+        ax2.scatter(p_values, f_31_values, color='green', label='F_31')
+        ax2.set_xlabel('P-Value')
+        ax2.set_ylabel('F_31 Value')
+        ax2.set_title('F_31 Values vs. P-Values')
+        ax2.legend()
 
-        ax1.bar(ind - width/2, average_probabilities,
-                width, label='Average Probabilities')
-        ax1.bar(ind + width/2, average_frequencies,
-                width, label='Average Frequencies')
-        ax1.set_xlabel('Rank')
-        ax1.set_ylabel('Average Probabilities and Frequencies')
-        ax1.set_title('Rank Test Results')
-        ax1.set_xticks(ind)
-        ax1.set_xticklabels(ranks)
-        ax1.legend(loc='upper left')
+        # F_30 vs p-values
+        ax3.scatter(p_values, f_30_values, color='red', label='F_30')
+        ax3.set_xlabel('P-Value')
+        ax3.set_ylabel('F_30 Value')
+        ax3.set_title('F_30 Values vs. P-Values')
+        ax3.legend()
 
-        ax2 = ax1.twinx()
-        ax2.axhline(y=average_chi_squared, color='k',
-                    linestyle='-', label='Average Chi-squared')
-        ax2.axhline(y=average_p_value, color='r',
-                    linestyle='--', label='Average P-value')
-        ax2.set_ylabel('Average Chi-squared and P-value')
-        ax2.legend(loc='upper right')
+        # Adjust layout to prevent overlap
+        fig.tight_layout()
 
         plt.savefig(plot_path)
         plt.close()
-
         return str(plot_path)
 
     def _plot_random_excursions_variant_test(self, parsed_results, result_folder):
@@ -577,38 +541,22 @@ class TestResultService:
         """
         plot_path = result_folder / "custom_plot.png"
 
-        # Extracting data for the plot
-        cycles = []
-        applicable_status = []
-
-        for result in parsed_results:
-            cycles.append(result.get('Cycles', 0))
-            applicable = 1 if result.get(
-                'Applicable', 'Not Applicable') == 'Applicable' else 0
-            applicable_status.append(applicable)
+        number_of_cycles = [result.get('Number_Of_Cycles', 0) for result in parsed_results]
+        p_values = [result.get('p_value', 0) for result in parsed_results]
 
         # Creating the plot
-        fig, ax1 = plt.subplots()
+        fig, ax = plt.subplots()
 
-        # Bar plot for the number of cycles
-        ind = np.arange(len(parsed_results))  # the x locations for the groups
-        ax1.bar(ind, cycles, label='Number of Cycles')
+        # Scatter plot for 'p_values' vs 'Number_Of_Cycles'
+        ax.scatter(p_values, number_of_cycles, color='blue', label='Cycles vs. P-value')
+        ax.set_xlabel('P-value')
+        ax.set_ylabel('Number of Cycles')
+        ax.set_title('Variance Between Number of Cycles and P-values')
+        ax.legend(loc='upper right')
 
-        ax1.set_xlabel('Test Iteration')
-        ax1.set_ylabel('Number of Cycles')
-        ax1.set_title('Random Excursions Test Results')
-        ax1.legend(loc='upper left')
-
-        # Line plot for Applicability Status
-        ax2 = ax1.twinx()
-        ax2.plot(ind, applicable_status, 'k-',
-                 label='Applicability (1 = Applicable, 0 = Not Applicable)')
-        ax2.set_ylabel('Applicability Status')
-
-        # Adding a legend
-        ax2.legend(loc='upper right')
-
-        # Saving the plot
+        # Ensure the plot is scaled correctly
+        ax.autoscale_view()
+        
         plt.savefig(plot_path)
         plt.close()
         return str(plot_path)
@@ -705,8 +653,6 @@ class TestResultService:
         ax1.set_xlabel('Template Index')
         ax1.set_ylabel('Chi-squared Value')
         ax1.set_title('Non-periodic Templates Test Results - Chi-squared')
-        ax1.set_xticks(ind)
-        ax1.set_xticklabels(templates)
         ax1.legend(loc='upper left')
 
         # Saving the plot
@@ -875,6 +821,7 @@ class TestResultService:
         fig, ax1 = plt.subplots()
 
         # Plotting percentiles
+        color = 'tab:green'
         ax1.set_xlabel('Test Run')
         ax1.tick_params(axis='y', labelcolor=color)
 
@@ -953,7 +900,7 @@ class TestResultService:
 
         # Bar positions
         r = np.arange(n)
-        barWidth = 0.2
+        barWidth = 0.01
 
         # Create bars
         plt.bar(r, chi_squared, color='blue', width=barWidth,

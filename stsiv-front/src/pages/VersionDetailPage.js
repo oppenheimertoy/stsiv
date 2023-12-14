@@ -11,6 +11,7 @@ import Select from '@mui/material/Select';
 import LoadingSpinner from '../components/LoadingSpinner';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 const VersionDetailPage = () => {
     const [versionDetails, setVersionDetails] = useState(null);
@@ -24,6 +25,7 @@ const VersionDetailPage = () => {
     const [isTestRunning, setIsTestRunning] = useState(false);
 
     useEffect(() => {
+
         const fetchVersionDetails = async () => {
             try {
                 setIsPageLoading(true);
@@ -63,13 +65,36 @@ const VersionDetailPage = () => {
 
         try {
             await apiClient.post(`/version/${versionId}/run`);
-            // Handle successful test initiation here, e.g., show a message
+            // Polling for test completion
+            const checkTestCompletion = async () => {
+                // Implement logic to check if the test is completed
+                // This could be an API call that returns the test status
+                // For example:
+                // const response = await apiClient.get(`/version/${versionId}/isTestCompleted`);
+                // return response.data.isCompleted;
+            };
+    
+            let isCompleted = false;
+            while (!isCompleted) {
+                isCompleted = await checkTestCompletion();
+                // Wait for a certain time before next check
+                await new Promise(resolve => setTimeout(resolve, 5000)); // 5 seconds
+            }
+    
+            // Fetch results once the test is completed
+            const resultsResponse = await apiClient.get(`/result/${versionId}/list`);
+            setResults(resultsResponse.data);
         } catch (error) {
-            // Handle error here, e.g., show an error message
             console.error('Error starting the test:', error);
         }
+    
+        setIsTestRunning(false);
+    };
 
-        setIsTestRunning(false); // Test has started, stop showing spinner
+    const navigate = useNavigate();
+
+    const handleResultClick = (resultId) => {
+        navigate(`/result/${resultId}`);
     };
 
     const parseParams = (paramsString) => {
@@ -207,18 +232,27 @@ const VersionDetailPage = () => {
                     </MDBCol>
                 )}
                 <MDBCol md="6">
-                    <h2 className="text-white">Results</h2>
-                    <div className="results-list">
-                        {results.length > 0 ? results.map(result => (
-                            <MDBCard key={result.id} style={cardStyle}>
-                                <MDBCardBody>
-                                    {/* Display result details here */}
-                                    <MDBCardText>{result.name}</MDBCardText>
-                                </MDBCardBody>
-                            </MDBCard>
-                        )) : (
-                            <p className="text-white">No results found.</p>
-                        )}
+                <h2 className="text-white">Results</h2>
+                <div className="results-list">
+                    {results.length > 0 ? (
+                    <div className="d-flex flex-column">
+                        {results.map((result, index) => (
+                        <MDBCard 
+                            key={result.id} 
+                            style={cardStyle} 
+                            className={index !== 0 ? "mt-3" : ""}
+                            onClick={() => handleResultClick(result.id)} 
+                        >
+                            <MDBCardBody>
+                            {/* Display result details here */}
+                            <MDBCardText>{result.name}</MDBCardText>
+                            </MDBCardBody>
+                        </MDBCard>
+                        ))}
+                    </div>
+                    ) : (
+                    <p className="text-white">No results found.</p>
+                    )}
                         <MDBBtn type="button" style={buttonStyle} className="my-4" onClick={() => setIsUpdateModalOpen(true)}>Update Parameters</MDBBtn>
                         <CreateVersionUpdateModal
                             isOpen={isUpdateModalOpen}

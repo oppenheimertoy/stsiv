@@ -156,6 +156,7 @@ async def update_versions_params(
         version_id=version_id,
         new_params=params
     )
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     await test_result_service.create_result(
         version_id=version_id,
         test_identifiers=params.tests.value
