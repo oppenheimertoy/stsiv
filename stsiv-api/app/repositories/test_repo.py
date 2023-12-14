@@ -41,6 +41,24 @@ class TestRepository(AsyncBaseRepository):
                 select(Test.id).where(Test.identifier == identifier)
             )
             return result.scalars.first()
+        
+        
+    async def get_ids_by_identifiers(self, identifiers: List[int]) -> List[UUID]:
+        """Get a list of UUIDs corresponding to a list of identifiers.
+
+        Args:
+            identifiers (List[int]): List of identifiers.
+
+        Returns:
+            List[UUID]: List of UUIDs corresponding to the identifiers.
+        """
+        async with self.session_factory() as session:
+            result = await session.execute(
+                select(Test.id).where(Test.identifier.in_(identifiers))
+            )
+            return result.scalars().all()
+        
+    # TODO add method for geting id by identifier using list[int]
 
     async def get_all_test_type_uuids(self) -> List[UUID]:
         """_summary_
