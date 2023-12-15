@@ -99,6 +99,27 @@ async def get_pval_plot(
     pval_path = await result_service.get_pvalue_plot_dir(result_id)
     return FileResponse(pval_path)
 
+@result_router.get("/{result_id}/getStats")
+async def get_text_result(
+    result_id: UUID,
+    current_user: CurrentUser = Depends(
+        get_auth_user),
+    result_service: TestResultService = Depends(
+        BaseContainer().get_test_result_service
+    )
+) -> FileResponse:
+    """_summary_
+
+    Args:
+        result_id (UUID): _description_
+        current_user (CurrentUser, optional): _description_. Defaults to Depends( get_auth_user).
+        result_service (TestResultService, optional): _description_. Defaults to Depends( BaseContainer().get_test_result_service ).
+
+    Returns:
+        FileResponse: _description_
+    """
+    result_path = await result_service.get_result_dir(result_id)
+    return FileResponse(result_path)
 
 @result_router.get("/{version_id}/list")
 async def get_results_list(

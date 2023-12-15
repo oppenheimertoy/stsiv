@@ -61,34 +61,35 @@ const VersionDetailPage = () => {
 }, [versionDetails]);
 
     const handleStartTest = async () => {
-        setIsTestRunning(true); // Start the test and show spinner
+        setIsTestRunning(true); // Indicate test is running
 
         try {
-            await apiClient.post(`/version/${versionId}/run`);
-            // Polling for test completion
-            const checkTestCompletion = async () => {
-                // Implement logic to check if the test is completed
-                // This could be an API call that returns the test status
-                // For example:
-                // const response = await apiClient.get(`/version/${versionId}/isTestCompleted`);
-                // return response.data.isCompleted;
-            };
-    
-            let isCompleted = false;
-            while (!isCompleted) {
-                isCompleted = await checkTestCompletion();
-                // Wait for a certain time before next check
-                await new Promise(resolve => setTimeout(resolve, 5000)); // 5 seconds
+            const startResponse = await apiClient.post(`/version/${versionId}/run`);
+
+            if (startResponse.status === 200) {
+                let testCompleted = false;
+
+                while (!testCompleted) {
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds
+
+                    try {
+                        const resultsResponse = await apiClient.get(`/result/${versionId}/list`);
+                        
+                        if (resultsResponse.status === 200) {
+                            setResults(resultsResponse.data);
+                            testCompleted = true; // Test is completed, exit the loop
+                        }
+                    } catch (error) {
+                        // If fetching results fails, log the error but continue the loop
+                        console.error('Error fetching test results:', error);
+                    }
+                }
             }
-    
-            // Fetch results once the test is completed
-            const resultsResponse = await apiClient.get(`/result/${versionId}/list`);
-            setResults(resultsResponse.data);
         } catch (error) {
             console.error('Error starting the test:', error);
         }
-    
-        setIsTestRunning(false);
+
+        setIsTestRunning(false); // Test completed, stop the spinner
     };
 
     const navigate = useNavigate();

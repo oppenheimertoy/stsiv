@@ -49,7 +49,7 @@ class TestResultService:
         if test_identifiers == [0]:
             return await self.test_repo.get_all_test_type_uuids()
         else:
-            return await self.test_repo.get_id_by_identifier(test_identifiers)
+            return await self.test_repo.get_ids_by_identifiers(test_identifiers)
 
     async def create_result(
         self,
@@ -119,7 +119,27 @@ class TestResultService:
             str(version_id) / 'result' / str(test_name) / 'p_val.png'
 
         return result_pval_path
-    
+
+    async def get_result_dir(
+        self,
+        result_id: UUID
+    ):
+        """_summary_
+
+        Args:
+            test_id (UUID): _description_
+        """
+        test_res = await self.test_result_repo.get_result_by_id(
+            result_id=result_id
+        )
+        version_id = test_res[0][0].version_id
+        test_name = test_res[0][1]
+
+        result_path = self.file_storage_base_path / \
+            str(version_id) / 'result' / str(test_name) / 'stats.txt'
+
+        return result_path
+
     async def get_custom_plot_dir(
         self,
         result_id: UUID
@@ -310,7 +330,8 @@ class TestResultService:
         ax.scatter(sum_values, p_values, color='blue', label='Sum vs P-value')
         ax.set_xlabel('Sum')
         ax.set_ylabel('P-value')
-        ax.set_title('Variance Between Sum and P-values for Universal Statistical Test')
+        ax.set_title(
+            'Variance Between Sum and P-values for Universal Statistical Test')
         ax.legend(loc='upper right')
 
         plt.savefig(plot_path)
@@ -396,7 +417,8 @@ class TestResultService:
 
         # Extracting data for the plot
         v_n_obs = [result['V_n_obs'] for result in parsed_results]
-        calculated_statistic = [(result['V_n_obs'] - 2 * 1000 * result['P_i'] * (1 - result['P_i'])) / (2 * (1000**0.5) * result['P_i'] * (1 - result['P_i'])) for result in parsed_results]
+        calculated_statistic = [(result['V_n_obs'] - 2 * 1000 * result['P_i'] * (1 - result['P_i'])) / (
+            2 * (1000**0.5) * result['P_i'] * (1 - result['P_i'])) for result in parsed_results]
         p_values = [result['p_value'] for result in parsed_results]
 
         # Creating scatter plots
@@ -442,7 +464,8 @@ class TestResultService:
             frequencies = result.get('Frequencies', [0, 0, 0])
             p_value = float(result.get('p_value', 0))
             p_values.append(p_value)
-            f_32_values.append(frequencies[0])  # Assuming the order is F_32, F_31, F_30
+            # Assuming the order is F_32, F_31, F_30
+            f_32_values.append(frequencies[0])
             f_31_values.append(frequencies[1])
             f_30_values.append(frequencies[2])
 
@@ -541,14 +564,16 @@ class TestResultService:
         """
         plot_path = result_folder / "custom_plot.png"
 
-        number_of_cycles = [result.get('Number_Of_Cycles', 0) for result in parsed_results]
+        number_of_cycles = [result.get('Number_Of_Cycles', 0)
+                            for result in parsed_results]
         p_values = [result.get('p_value', 0) for result in parsed_results]
 
         # Creating the plot
         fig, ax = plt.subplots()
 
         # Scatter plot for 'p_values' vs 'Number_Of_Cycles'
-        ax.scatter(p_values, number_of_cycles, color='blue', label='Cycles vs. P-value')
+        ax.scatter(p_values, number_of_cycles,
+                   color='blue', label='Cycles vs. P-value')
         ax.set_xlabel('P-value')
         ax.set_ylabel('Number of Cycles')
         ax.set_title('Variance Between Number of Cycles and P-values')
@@ -556,7 +581,7 @@ class TestResultService:
 
         # Ensure the plot is scaled correctly
         ax.autoscale_view()
-        
+
         plt.savefig(plot_path)
         plt.close()
         return str(plot_path)
@@ -779,11 +804,13 @@ class TestResultService:
         """
         plot_path = result_folder / "custom_plot.png"
         # Extracting nth_partial_sums for plotting
-        nth_partial_sums = [result['Nth_partial_sum'] for result in parsed_results]
+        nth_partial_sums = [result['Nth_partial_sum']
+                            for result in parsed_results]
 
         # Divide the nth_partial_sums into intervals
         interval_size = max(1, len(nth_partial_sums) // 20)
-        box_data = [nth_partial_sums[i:i + interval_size] for i in range(0, len(nth_partial_sums), interval_size)]
+        box_data = [nth_partial_sums[i:i + interval_size]
+                    for i in range(0, len(nth_partial_sums), interval_size)]
 
         # Creating the box plot
         fig, ax = plt.subplots()
@@ -860,7 +887,8 @@ class TestResultService:
 
         # Divide the max_sums into intervals
         interval_size = max(1, len(max_sums) // 15)
-        box_data = [max_sums[i:i + interval_size] for i in range(0, len(max_sums), interval_size)]
+        box_data = [max_sums[i:i + interval_size]
+                    for i in range(0, len(max_sums), interval_size)]
 
         # Creating the box plot
         fig, ax = plt.subplots()
